@@ -3,6 +3,7 @@ package fileio;
 import actor.ActorsAwards;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +28,8 @@ public final class ActorInputData {
      * awards won by the actor
      */
     private Map<ActorsAwards, Integer> awards;
+
+    private ArrayList<Double> ratings = new ArrayList<Double>();
 
     public ActorInputData(final String name, final String careerDescription,
                           final ArrayList<String> filmography,
@@ -56,6 +59,8 @@ public final class ActorInputData {
     public Map<ActorsAwards, Integer> getAwards() {
         return awards;
     }
+
+    public String getCareerDescription() { return careerDescription; }
 
     @Override
     public String toString() {

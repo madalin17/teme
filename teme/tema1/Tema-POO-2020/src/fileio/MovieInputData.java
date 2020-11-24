@@ -1,6 +1,8 @@
 package fileio;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Information about a movie, retrieved from parsing the input test files
@@ -13,11 +15,29 @@ public final class MovieInputData extends ShowInput {
      */
     private final int duration;
 
+    private Map<String, Double> ratings = new HashMap<String, Double>();
+
     public MovieInputData(final String title, final ArrayList<String> cast,
                           final ArrayList<String> genres, final int year,
                           final int duration) {
         super(title, year, cast, genres);
         this.duration = duration;
+    }
+
+    public Map<String, Double> getRatings() { return ratings; }
+
+    public double getRating() {
+        double sum = 0;
+        int count = 0;
+        if (ratings.size() == 0) {
+            return 0;
+        }
+        for (Map.Entry<String, Double> entry : ratings.entrySet()) {
+            sum += entry.getValue();
+            count++;
+        }
+        double rating = (double) sum / count;
+        return rating;
     }
 
     public int getDuration() {

@@ -53,7 +53,7 @@ public final class Constants {
     public static final String MESSAGE = "message";
     public static final String QUERY = "query";
     public static final String COMMAND = "command";
-    public static final String RECOMMENDATION = "Recommendation";
+    public static final String RECOMMENDATION = "recommendation";
 
     // checker constants
     public static final String ID_STRING = "id";
@@ -75,4 +75,19 @@ public final class Constants {
     public static final int MAX_LENGTH = 50;
 
     // add any constants you think you may use
+    public static final String VIEW = "view";
+    public static final String RATING = "rating";
+    public static final String ASC = "asc";
+    public static final String DESC = "desc";
+    public static final String RATINGS = "ratings";
+    public static final String FAVORITE = "favorite";
+    public static final String LONGEST = "longest";
+    public static final String MOSTVIEWED = "most_viewed";
+    public static final String STANDARD = "standard";
+    public static final String BESTUNSEEN = "best_unseen";
+    public static final String SEARCH = "search";
+    public static final String PREMIUM = "PREMIUM";
+    public static final String POPULAR = "popular";
+    public static final String AVERAGE = "average";
+
 }

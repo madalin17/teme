@@ -1,8 +1,8 @@
 package fileio;
 
 import entertainment.Season;
-
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Information about a tv show, retrieved from parsing the input test files
@@ -28,9 +28,40 @@ public final class SerialInputData extends ShowInput {
         this.seasons = seasons;
     }
 
+    public int getDuration() {
+        int duration = 0;
+        for (Season season : seasons) {
+            duration += season.getDuration();
+        }
+        return duration;
+    }
+    public double getRating() {
+        double sum = 0, serialSum;
+        int count = 0, serialCount;
+        for (Season season : seasons) {
+            count++;
+            serialSum = 0;
+            serialCount = 0;
+            if (season.getRatings().size() == 0) {
+                serialCount++;
+            } else {
+                for (Map.Entry<String, Double> entry : season.getRatings().entrySet()) {
+                    serialSum += entry.getValue();
+                    serialCount++;
+                }
+            }
+            double seasonRating = (double) serialSum / serialCount;
+            sum += seasonRating;
+        }
+        double rating = (double) sum / count;
+        return rating;
+    }
+
     public int getNumberSeason() {
         return numberOfSeasons;
     }
+
+    public ArrayList<Season> getSeasons() { return seasons; }
 
     @Override
     public String toString() {
