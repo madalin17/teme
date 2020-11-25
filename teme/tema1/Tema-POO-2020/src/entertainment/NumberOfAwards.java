@@ -3,7 +3,7 @@ package entertainment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NumberOfAwards implements Comparable<NumberOfAwards> {
+public final class NumberOfAwards implements Comparable<NumberOfAwards> {
 
     private List<String> awards;
 
@@ -11,35 +11,47 @@ public class NumberOfAwards implements Comparable<NumberOfAwards> {
 
     private int totalAwards;
 
-    public NumberOfAwards(int correctAwards, int totalAwards) {
+    public NumberOfAwards(final int correctAwards, final int totalAwards) {
         this.awards = new ArrayList<String>();
         this.correctAwards = correctAwards;
         this.totalAwards = totalAwards;
     }
 
-    public int getCorrectAwards() { return correctAwards; }
+    public int getCorrectAwards() {
+        return correctAwards;
+    }
 
-    public void setCorrectAwards(int correctAwards) { this.correctAwards = correctAwards; }
+    public void setCorrectAwards(final int correctAwards) {
+        this.correctAwards = correctAwards;
+    }
 
-    public int getTotalAwards() { return totalAwards; }
+    public int getTotalAwards() {
+        return totalAwards;
+    }
 
-    public void setTotalAwards(int totalAwards) { this.totalAwards = totalAwards; }
+    public void setTotalAwards(final int totalAwards) {
+        this.totalAwards = totalAwards;
+    }
 
-    public List<String> getAwards() { return awards; }
+    public List<String> getAwards() {
+        return awards;
+    }
 
-    public void setAwards(List<String> awards) { this.awards = awards; }
+    public void setAwards(final List<String> awards) {
+        this.awards = awards;
+    }
 
     @Override
-    public int compareTo(NumberOfAwards awards) {
-        return Integer.compare(getTotalAwards(), awards.getTotalAwards());
+    public int compareTo(final NumberOfAwards numberAwards) {
+        return Integer.compare(getTotalAwards(), numberAwards.getTotalAwards());
     }
 
     @Override
     public String toString() {
-        return "NumberOfAwards{" +
-                "awards=" + awards +
-                ", correctAwards=" + correctAwards +
-                ", totalAwards=" + totalAwards +
-                '}';
+        return "NumberOfAwards{"
+                + "awards=" + awards
+                + ", correctAwards=" + correctAwards
+                + ", totalAwards=" + totalAwards
+                + '}';
     }
 }

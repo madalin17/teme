@@ -4,36 +4,49 @@ import actor.ActorsAwards;
 import common.Constants;
 import entertainment.ActorRating;
 import entertainment.NumberOfAwards;
-import fileio.*;
-import utils.Utils;
-
-import java.util.*;
+import fileio.Input;
+import fileio.SerialInputData;
+import fileio.MovieInputData;
+import fileio.ActorInputData;
+import fileio.UserInputData;
+import java.util.ArrayList;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Query {
+public final class Query {
 
-    public static class User {
+    private Query() {
+
+    }
+
+    public static final class User {
+
+        private User() {
+
+        }
 
         /**
-         * "action_type":"query", "object_type":"users", "number":"x"
-         * "sort_type":"x", "criteria":"num_ratings"
+         * @param input database
+         * @param number N users to be shown in output
+         * @param sortType sorting type, if ascending or descending
+         * @return string to be shown in output
          */
-        public static String ratings(Input input, int number, String sortType) {
+        public static String ratings(final Input input, final int number, final String sortType) {
             SortedMap<String, Integer> mapOfRatings = new TreeMap<>();
-            ArrayList<String> sortedUsers = new ArrayList<String>();
-            /**
-             * Put users in a sorted map by key
-             */
+            ArrayList<String> sortedUsers = new ArrayList<>();
+
             for (UserInputData user : input.getUsers()) {
                 if (user.getNumberOfRatings() != 0) {
                     mapOfRatings.put(user.getUsername(), user.getNumberOfRatings());
                 }
             }
             Map<String, Integer> sortedMapOfRatings = MapUtil.sortByValues(mapOfRatings);
-            /**
-             * Put users in a sorted list by number of ratings
-             */
+
             for (Map.Entry<String, Integer> entry : sortedMapOfRatings.entrySet()) {
                 sortedUsers.add(entry.getKey());
             }
@@ -41,42 +54,87 @@ public class Query {
         }
     }
 
-    public static class Video {
+    public static final class Video {
+
+        private Video() {
+
+        }
 
         /**
-         * "action_type":"query", "object_type":"x", "number":"x"
-         * "filters":"x", "sort_type":"x", "criteria":"ratings"
+         * @param input database
+         * @param number N videos to be shown in output
+         * @param objectType if movies or series
+         * @param sortType if ascending or descending
+         * @param year attribute of a movie
+         * @param genre attribute of a movie
+         * @return string to be shown in output
          */
-        public static String rating(Input input, int number, String objectType, String sortType, int year, String genre) {
+        public static String rating(final Input input, final int number, final String objectType,
+                                    final String sortType, final int year, final String genre) {
             ArrayList<String> sortedVideos = new ArrayList<String>();
-            Map<String, Double> sortedMapOfRatings = QueryOperations.ratingsMap(input, objectType, year, genre);
+            Map<String, Double> sortedMapOfRatings =
+                    QueryOperations.ratingsMap(input, objectType, year, genre);
             for (Map.Entry<String, Double> entry : sortedMapOfRatings.entrySet()) {
                 sortedVideos.add(entry.getKey());
             }
             return QueryOperations.printList(sortedVideos, number, sortType);
         }
 
-        public static String favorite(Input input, int number, String objectType, String sortType, int year, String genre) {
+        /**
+         * @param input database
+         * @param number N videos to be shown in output
+         * @param objectType if movies or series
+         * @param sortType if ascending or descending
+         * @param year attribute of a movie
+         * @param genre attribute of a movie
+         * @return string to be shown in output
+         */
+        public static String favorite(final Input input, final int number, final String objectType,
+                                      final String sortType, final int year, final String genre) {
             ArrayList<String> sortedFavorites = new ArrayList<String>();
-            Map<String, Integer> sortedFavoriteMap = QueryOperations.favoriteMap(input, objectType, year, genre);
+            Map<String, Integer> sortedFavoriteMap =
+                    QueryOperations.favoriteMap(input, objectType, year, genre);
             for (Map.Entry<String, Integer> entry : sortedFavoriteMap.entrySet()) {
                 sortedFavorites.add(entry.getKey());
             }
             return QueryOperations.printList(sortedFavorites, number, sortType);
         }
 
-        public static String longest(Input input, int number, String objectType, String sortType, int year, String genre) {
+        /**
+         * @param input database
+         * @param number N videos to be shown in output
+         * @param objectType if movies or series
+         * @param sortType if ascending or descending
+         * @param year attribute of a movie
+         * @param genre attribute of a movie
+         * @return string to be shown in output
+         */
+        public static String longest(final Input input, final int number, final String objectType,
+                                     final String sortType, final int year, final String genre) {
             ArrayList<String> sortedLongest = new ArrayList<String>();
-            Map<String, Integer> sortedLongestMap = QueryOperations.longestMap(input, objectType, year, genre);
+            Map<String, Integer> sortedLongestMap =
+                    QueryOperations.longestMap(input, objectType, year, genre);
             for (Map.Entry<String, Integer> entry : sortedLongestMap.entrySet()) {
                 sortedLongest.add(entry.getKey());
             }
             return QueryOperations.printList(sortedLongest, number, sortType);
         }
 
-        public static String mostViewed(Input input, int number, String objectType, String sortType, int year, String genre) {
+        /**
+         * @param input database
+         * @param number N videos to be shown in output
+         * @param objectType if movies or series
+         * @param sortType if ascending or descending
+         * @param year attribute of a movie
+         * @param genre attribute of a movie
+         * @return string to be shown in output
+         */
+        public static String mostViewed(final Input input, final int number,
+                                        final String objectType, final String sortType,
+                                        final int year, final String genre) {
             ArrayList<String> sortedMostViewed = new ArrayList<String>();
-            Map<String, Integer> sortedMostViewedMap = QueryOperations.mostViewedMap(input, objectType, year, genre);
+            Map<String, Integer> sortedMostViewedMap =
+                    QueryOperations.mostViewedMap(input, objectType, year, genre);
             for (Map.Entry<String, Integer> entry : sortedMostViewedMap.entrySet()) {
                 sortedMostViewed.add(entry.getKey());
             }
@@ -84,9 +142,19 @@ public class Query {
         }
     }
 
-    public static class Actor {
+    public static final class Actor {
 
-        public static String average(Input input, int number, String sortType) {
+        private Actor() {
+
+        }
+
+        /**
+         * @param input database
+         * @param number N users to be shown in output
+         * @param sortType sorting type, if ascending or descending
+         * @return string to be shown in output
+         */
+        public static String average(final Input input, final int number, final String sortType) {
             int oneRating = 1;
 
             QueryOperations.ratingsMap(input, Constants.MOVIES, 0, null);
@@ -100,7 +168,8 @@ public class Query {
                     } else {
                         for (Map.Entry<String, ActorRating> entry : map.entrySet()) {
                             if (entry.getKey().equals(actor) && movie.getRating() != 0) {
-                                double ratingSum = entry.getValue().getRatingSum() + movie.getRating();
+                                double ratingSum =
+                                        entry.getValue().getRatingSum() + movie.getRating();
                                 int count = entry.getValue().getCount() + oneRating;
                                 entry.getValue().setRatingSum(ratingSum);
                                 entry.getValue().setCount(count);
@@ -116,7 +185,8 @@ public class Query {
                     } else {
                         for (Map.Entry<String, ActorRating> entry : map.entrySet()) {
                             if (entry.getKey().equals(actor) && serial.getRating() != 0) {
-                                double ratingSum = entry.getValue().getRatingSum() + serial.getRating();
+                                double ratingSum =
+                                        entry.getValue().getRatingSum() + serial.getRating();
                                 int count = entry.getValue().getCount() + oneRating;
                                 entry.getValue().setRatingSum(ratingSum);
                                 entry.getValue().setCount(count);
@@ -131,7 +201,15 @@ public class Query {
             return QueryOperations.printList(actors, number, sortType);
         }
 
-        public static String awards(Input input, int number, String sortType, List<String> awards) {
+        /**
+         * @param input database
+         * @param number N users to be shown in output
+         * @param sortType sorting type, if ascending or descending
+         * @param awards list of awards, attribute of an actor
+         * @return string to be shown in output
+         */
+        public static String awards(final Input input, final int number,
+                                    final String sortType, final List<String> awards) {
             int correctAwards = awards.size();
 
             Map<String, NumberOfAwards> map = new TreeMap<String, NumberOfAwards>();
@@ -145,9 +223,10 @@ public class Query {
                 }
                 for (Map.Entry<ActorsAwards, Integer> award : actor.getAwards().entrySet()) {
                     for (Map.Entry<String, NumberOfAwards> entry : map.entrySet()) {
-                        if (entry.getKey().equals(actor.getName()) &&
-                            awards.contains(award.getKey().toString()) &&
-                            !entry.getValue().getAwards().contains(award.getKey().toString())) {
+                        if (entry.getKey().equals(actor.getName())
+                                && awards.contains(award.getKey().toString())
+                                && !entry.getValue().getAwards()
+                                .contains(award.getKey().toString())) {
                             int newCorrectawards = entry.getValue().getCorrectAwards() + 1;
                             entry.getValue().getAwards().add(award.getKey().toString());
                             entry.getValue().setCorrectAwards(newCorrectawards);
@@ -169,7 +248,15 @@ public class Query {
             return QueryOperations.printList(actors, number, sortType);
         }
 
-        public static String filterDescription(Input input, int number, String sortType, List<String> words) {
+        /**
+         * @param input database
+         * @param number N users to be shown in output
+         * @param sortType sorting type, if ascending or descending
+         * @param words strings to search for in an actor's description
+         * @return string to be shown in output
+         */
+        public static String filterDescription(final Input input, final int number,
+                                               final String sortType, final List<String> words) {
             boolean filter;
             ArrayList<String> actors = new ArrayList<String>();
 
@@ -177,7 +264,8 @@ public class Query {
                 filter = true;
                 String description = actor.getCareerDescription();
                 for (String word : words) {
-                    Pattern pattern = Pattern.compile("[.,-;'!( ]" + word + "[.,-;'!) ]", Pattern.CASE_INSENSITIVE);
+                    Pattern pattern = Pattern.compile("[.,-;'!( ]"
+                            + word + "[.,-;'!) ]", Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(description);
                     if (!matcher.find()) {
                         filter = false;
@@ -192,5 +280,7 @@ public class Query {
             Collections.sort(actors);
             return QueryOperations.printList(actors, number, sortType);
         }
+
     }
+
 }

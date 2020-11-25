@@ -3,7 +3,6 @@ package fileio;
 import actor.ActorsAwards;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,7 +59,9 @@ public final class ActorInputData {
         return awards;
     }
 
-    public String getCareerDescription() { return careerDescription; }
+    public String getCareerDescription() {
+        return careerDescription;
+    }
 
     @Override
     public String toString() {

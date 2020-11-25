@@ -28,6 +28,9 @@ public final class SerialInputData extends ShowInput {
         this.seasons = seasons;
     }
 
+    /**
+     * @return duration of a series
+     */
     public int getDuration() {
         int duration = 0;
         for (Season season : seasons) {
@@ -35,6 +38,10 @@ public final class SerialInputData extends ShowInput {
         }
         return duration;
     }
+
+    /**
+     * @return rating of a series
+     */
     public double getRating() {
         double sum = 0, serialSum;
         int count = 0, serialCount;
@@ -61,7 +68,9 @@ public final class SerialInputData extends ShowInput {
         return numberOfSeasons;
     }
 
-    public ArrayList<Season> getSeasons() { return seasons; }
+    public ArrayList<Season> getSeasons() {
+        return seasons;
+    }
 
     @Override
     public String toString() {

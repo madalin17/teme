@@ -25,7 +25,7 @@ public abstract class ShowInput {
      */
     private final ArrayList<String> genres;
 
-    public int numberFavorite = 0;
+    private int numberFavorite = 0;
 
     private int views = 0;
 
@@ -37,13 +37,33 @@ public abstract class ShowInput {
         this.genres = genres;
     }
 
-    public int getNumberFavorite() { return numberFavorite; }
+    /**
+     * @return the number of times a video apprears in a favorite list
+     */
+    public int getNumberFavorite() {
+        return numberFavorite;
+    }
 
-    public void setNumberFavorite(int numberFavorite) { this.numberFavorite = numberFavorite; }
+    /**
+     * @param numberFavorite sets the number of times a video appears in a favorite list
+     */
+    public void setNumberFavorite(final int numberFavorite) {
+        this.numberFavorite = numberFavorite;
+    }
 
-    public int getViews() { return views; }
+    /**
+     * @return the number of views a video has
+     */
+    public int getViews() {
+        return views;
+    }
 
-    public void setViews(int views) { this.views = views; }
+    /**
+     * @param views sets the number of views a video has
+     */
+    public void setViews(final int views) {
+        this.views = views;
+    }
 
     public final String getTitle() {
         return title;

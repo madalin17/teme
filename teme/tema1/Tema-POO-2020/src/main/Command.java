@@ -7,78 +7,31 @@ import fileio.SerialInputData;
 import fileio.UserInputData;
 import java.util.Map;
 
-public class Command {
+public final class Command {
 
-    public static boolean checkVideoExistence(Input input, String title) {
-        boolean movieExists = false;
-        /**
-         * Verify if the video title is in the movie database
-         */
-        for (MovieInputData movie : input.getMovies()) {
-            if (movie.getTitle().equals(title)) {
-                movieExists = true;
-                break;
-            }
-        }
-        /**
-         * Verify if the video title is in the serial database
-         */
-        if (!movieExists) {
-            for (SerialInputData serial : input.getSerials()) {
-                if (serial.getTitle().equals(title)) {
-                    movieExists = true;
-                    break;
-                }
-            }
-        }
-        /**
-         * If the video is not in a database, return false
-         */
-        if (!movieExists) {
-            return false;
-        }
-        return true;
-    }
+    private Command() {
 
-    public static boolean checkVideoAsSeen(Input input, String username, String title) {
-        for (UserInputData user : input.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                for (Map.Entry<String, Integer> videoEntry : user.getHistory().entrySet()) {
-                    if (videoEntry.getKey().equals(title)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     /**
-     * "action_type":"command", "type":"favorite"
+     * @param input database
+     * @param username user that wants to add a film to his favorites list
+     * @param title name of video to be put in a favorites list
+     * @return string to be shown in output
      */
-    public static String favorite(Input input, String username, String title) {
+    public static String favorite(final Input input,
+                                  final String username, final String title) {
         UserInputData thisUser = null;
-        /**
-         * If video does not exist in database, return error message
-         */
-        if (!checkVideoExistence(input, title)) {
+
+        if (!CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
-        /**
-         * Search user in database
-         */
         for (UserInputData user : input.getUsers()) {
             if (user.getUsername().equals(username)) {
                 thisUser = user;
                 break;
             }
         }
-        /**
-         * Verify if the user has aleready seen the movie
-         * If yes, search for the movie in the favoriteMovies list
-         * If the video already exists in the list, return error message
-         * Else return success message
-         */
 
         if (thisUser.getHistory().containsKey(title)) {
             if (thisUser.getFavoriteMovies() != null) {
@@ -87,7 +40,9 @@ public class Command {
                         return "error -> " + title + " is already in favourite list";
                     }
                 }
-            } else thisUser.newFavoriteMovies();
+            } else {
+                thisUser.newFavoriteMovies();
+            }
             thisUser.getFavoriteMovies().add(title);
         } else {
             return "error -> " + title + " is not seen";
@@ -96,36 +51,32 @@ public class Command {
     }
 
     /**
-     * "action_type":"command", "type":"view"
+     *
+     * @param input database
+     * @param username user that saw the video
+     * @param title title of seen video
+     * @return string to be shown in output
      */
-    public static String view(Input input, String username, String title) {
+    public static String view(final Input input,
+                              final String username, final String title) {
         int onceSeen = 1;
         UserInputData thisUser = null;
-        /**
-         * If video does not exist in database, return error message
-         */
-        if (!checkVideoExistence(input, title)) {
+        if (!CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
-        /**
-         * Search user in database
-         */
         for (UserInputData user : input.getUsers()) {
             if (user.getUsername().equals(username)) {
                 thisUser = user;
                 break;
             }
         }
-        /**
-         * Check the history to see if the video was already seen
-         * In this case, increment number of views and return success message
-         * Otherwise, add video to history, set one as number of wiews and return success message
-         */
+
         for (Map.Entry<String, Integer> viewedVideo : thisUser.getHistory().entrySet()) {
             if (viewedVideo.getKey().equals(title)) {
                 Integer numberViews = viewedVideo.getValue() + onceSeen;
                 viewedVideo.setValue(numberViews);
-                return "success -> " + title + " was viewed with total views of " + viewedVideo.getValue();
+                return "success -> " + title
+                        + " was viewed with total views of " + viewedVideo.getValue();
             }
         }
         thisUser.getHistory().put(title, onceSeen);
@@ -133,20 +84,18 @@ public class Command {
     }
 
     /**
-     * "action_type":"command", "type":"rating", "season":"0"
+     * @param input database
+     * @param username user that rates
+     * @param title name of video to be rated
+     * @param grade rating of video to be rated
+     * @return string to be shown in output
      */
-    public static String ratingMovie(Input input, String username, String title, double grade) {
-        /**
-         * Return error message if movie was not seen by user
-         */
-        if (!checkVideoAsSeen(input, username, title)) {
+    public static String ratingMovie(final Input input, final String username,
+                                     final String title, final double grade) {
+        if (!CommandOperations.checkVideoAsSeen(input, username, title)) {
             return "error -> " + title + " is not seen";
         }
-        /**
-         * Verify if the video title is in the movie database
-         * If user already graded the movie, return error message
-         * If not, add the pair <username, grade> to ratings and return success message
-         */
+
         for (MovieInputData movie : input.getMovies()) {
             if (movie.getTitle().equals(title)) {
                 for (Map.Entry<String, Double> userRating : movie.getRatings().entrySet()) {
@@ -155,9 +104,6 @@ public class Command {
                     }
                 }
                 movie.getRatings().put(username, grade);
-                /**
-                 * Search for user in database and increment number of ratings
-                 */
                 for (UserInputData user : input.getUsers()) {
                     if (user.getUsername().equals(username)) {
                         int currRatings = user.getNumberOfRatings();
@@ -168,27 +114,23 @@ public class Command {
                 return "success -> " + title + " was rated with " + grade + " by " + username;
             }
         }
-        /**
-         * If video not found in movie database, return error message
-         */
         return "error -> " + title + " is not in database";
     }
 
     /**
-     * "action_type":"command", "type":"rating", "season":"x"
+     * @param input database
+     * @param username user that rates
+     * @param title name of video to be rated
+     * @param grade rating of video to be rated
+     * @param seasonNumber season to be rated
+     * @return string to be shown in output
      */
-    public static String ratingSeries(Input input, String username, String title, double grade, int seasonNumber) {
-        /**
-         * Return error message if movie was not seen by user
-         */
-        if (!checkVideoAsSeen(input, username, title)) {
+    public static String ratingSeries(final Input input,
+                                      final String username, final String title,
+                                      final double grade, final int seasonNumber) {
+        if (!CommandOperations.checkVideoAsSeen(input, username, title)) {
             return "error -> " + title + " is not seen";
         }
-        /**
-         *  Verify if the video title is in the serial database
-         *  If user already graded this season of the serial, return error message
-         *  If not, add the pair <username, grade> to ratings and return success message
-         */
 
         for (SerialInputData serial : input.getSerials()) {
             if (serial.getTitle().equals(title)) {
@@ -205,9 +147,6 @@ public class Command {
                         break;
                     }
                 }
-                /**
-                 * Search for user in database and increment number of ratings
-                 */
                 for (UserInputData user : input.getUsers()) {
                     if (user.getUsername().equals(username)) {
                         int currRatings = user.getNumberOfRatings();
@@ -218,11 +157,7 @@ public class Command {
                 return "success -> " + title + " was rated with " + grade + " by " + username;
             }
         }
-        /**
-         * If video not found in serial database, return error message
-         */
         return "error -> " + title + " is not in database";
     }
-
 
 }

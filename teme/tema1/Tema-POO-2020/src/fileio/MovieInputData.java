@@ -24,8 +24,13 @@ public final class MovieInputData extends ShowInput {
         this.duration = duration;
     }
 
-    public Map<String, Double> getRatings() { return ratings; }
+    public Map<String, Double> getRatings() {
+        return ratings;
+    }
 
+    /**
+     * @return rating of a movie
+     */
     public double getRating() {
         double sum = 0;
         int count = 0;

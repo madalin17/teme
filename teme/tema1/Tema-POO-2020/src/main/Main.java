@@ -22,6 +22,9 @@ import java.util.Objects;
  * The entry point to this homework. It runs the checker that tests your implementation.
  */
 public final class Main {
+
+    private static final int TWO = 2;
+    private static final int THREE = 3;
     /**
      * for coding style
      */
@@ -108,23 +111,27 @@ public final class Main {
                     year = 0;
                 }
                 genre = action.getFilters().get(1).get(0);
-                if (action.getObjectType().equals(Constants.USERS) &&
-                    action.getCriteria().equals(Constants.NUM_RATINGS)) {
+                if (action.getObjectType().equals(Constants.USERS)
+                        && action.getCriteria().equals(Constants.NUM_RATINGS)) {
                     message = Query.User.ratings(input, number, sortType);
                 }
-                if (action.getObjectType().equals(Constants.MOVIES) ||
-                    action.getObjectType().equals(Constants.SHOWS)) {
+                if (action.getObjectType().equals(Constants.MOVIES)
+                        || action.getObjectType().equals(Constants.SHOWS)) {
                     if (action.getCriteria().equals(Constants.RATINGS)) {
-                        message = Query.Video.rating(input, number, objectType, sortType, year, genre);
+                        message = Query.Video.rating(input, number, objectType,
+                                sortType, year, genre);
                     }
                     if (action.getCriteria().equals(Constants.FAVORITE)) {
-                        message = Query.Video.favorite(input, number, objectType, sortType, year, genre);
+                        message = Query.Video.favorite(input, number, objectType,
+                                sortType, year, genre);
                     }
                     if (action.getCriteria().equals(Constants.LONGEST)) {
-                        message = Query.Video.longest(input, number, objectType, sortType, year, genre);
+                        message = Query.Video.longest(input, number, objectType,
+                                sortType, year, genre);
                     }
                     if (action.getCriteria().equals(Constants.MOSTVIEWED)) {
-                        message = Query.Video.mostViewed(input, number, objectType, sortType, year, genre);
+                        message = Query.Video.mostViewed(input, number, objectType,
+                                sortType, year, genre);
                     }
                 }
                 if (action.getObjectType().equals(Constants.ACTORS)) {
@@ -132,11 +139,11 @@ public final class Main {
                         message = Query.Actor.average(input, number, sortType);
                     }
                     if (action.getCriteria().equals(Constants.AWARDS)) {
-                        awards = action.getFilters().get(3);
+                        awards = action.getFilters().get(THREE);
                         message = Query.Actor.awards(input, number, sortType, awards);
                     }
                     if (action.getCriteria().equals(Constants.FILTER_DESCRIPTIONS)) {
-                        words = action.getFilters().get(2);
+                        words = action.getFilters().get(TWO);
                         message = Query.Actor.filterDescription(input, number, sortType, words);
                     }
                 }

@@ -38,23 +38,36 @@ public final class UserInputData {
         this.numberOfRatings = 0;
     }
 
-    public int getNumberOfRatings() { return numberOfRatings; }
+    public int getNumberOfRatings() {
+        return numberOfRatings;
+    }
 
-    public void setNumberOfRatings(int numberOfRatings) { this.numberOfRatings = numberOfRatings; }
+    public void setNumberOfRatings(final int numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
 
     public String getUsername() {
         return username;
     }
 
-    public ArrayList<String> getFavoriteMovies() { return favoriteMovies; }
+    public ArrayList<String> getFavoriteMovies() {
+        return favoriteMovies;
+    }
 
-    public void newFavoriteMovies() { this.favoriteMovies = new ArrayList<String>(); }
+    /**
+     * Creating new favorites list for an user if null
+     */
+    public void newFavoriteMovies() {
+        this.favoriteMovies = new ArrayList<String>();
+    }
 
     public Map<String, Integer> getHistory() {
         return history;
     }
 
-    public String getSubscriptionType() { return subscriptionType; }
+    public String getSubscriptionType() {
+        return subscriptionType;
+    }
 
     @Override
     public String toString() {
