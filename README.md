@@ -1,7 +1,7 @@
 ##  Dobrita George-Madalin - 324CAb
 ##  Tema1 - POO - VideosDB
 
-Comenzile:
+Comenzile: \\
     Implementate prin functii statice in clasele Command si CommandOperations.
     Din lista de user il caut pe acela cu username-ul dat ca parametru fiecarei functii. In final, functiile returneaza un mesaj de success sau de eroare care este afisat impreuna cu id-ul actiunii in output.
     Favorite:
