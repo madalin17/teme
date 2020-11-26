@@ -141,7 +141,7 @@ public final class Query {
         }
 
         /**
-         * Function average creates a sorted by ratings TreeMap that contains videos and
+         * Function average creates a sorted by ratings TreeMap that contains actors' name and
          * a class that contains sum of ratings and number of ratings for each actor
          * and the first or last @param number of keys are shown in output
          * @param input database
