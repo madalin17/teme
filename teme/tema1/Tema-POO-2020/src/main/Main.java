@@ -9,7 +9,6 @@ import fileio.InputLoader;
 import fileio.Writer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,12 +22,15 @@ import java.util.Objects;
  */
 public final class Main {
 
+    // constants used in action function
     private static final int TWO = 2;
     private static final int THREE = 3;
+
     /**
      * for coding style
      */
     private Main() {
+
     }
 
     /**
@@ -64,6 +66,7 @@ public final class Main {
     }
 
     /**
+     * This function parses each action in the list to its specific command, query or recommendation
      * @param filePath1 for input file
      * @param filePath2 for output file
      * @throws IOException in case of exceptions to reading / writing
@@ -129,7 +132,7 @@ public final class Main {
                         message = Query.Video.longest(input, number, objectType,
                                 sortType, year, genre);
                     }
-                    if (action.getCriteria().equals(Constants.MOSTVIEWED)) {
+                    if (action.getCriteria().equals(Constants.MOST_VIEWED)) {
                         message = Query.Video.mostViewed(input, number, objectType,
                                 sortType, year, genre);
                     }
@@ -153,7 +156,7 @@ public final class Main {
                 if (action.getType().equals(Constants.STANDARD)) {
                     message = Recommendation.standard(input, username);
                 }
-                if (action.getType().equals(Constants.BESTUNSEEN)) {
+                if (action.getType().equals(Constants.BEST_UNSEEN)) {
                     message = Recommendation.bestUnseen(input, username);
                 }
                 if (action.getType().equals(Constants.POPULAR)) {
@@ -170,7 +173,6 @@ public final class Main {
             JSONObject jsonObject = fileWriter.writeFile(action.getActionId(), message);
             arrayResult.add(jsonObject);
         }
-
         fileWriter.closeJSON(arrayResult);
     }
 }

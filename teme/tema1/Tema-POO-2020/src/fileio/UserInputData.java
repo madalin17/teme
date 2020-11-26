@@ -20,7 +20,7 @@ public final class UserInputData {
     /**
      * The history of the movies seen
      */
-    private Map<String, Integer> history; // final
+    private final Map<String, Integer> history; // final
     /**
      * Movies added to favorites
      */
@@ -58,7 +58,7 @@ public final class UserInputData {
      * Creating new favorites list for an user if null
      */
     public void newFavoriteMovies() {
-        this.favoriteMovies = new ArrayList<String>();
+        this.favoriteMovies = new ArrayList<>();
     }
 
     public Map<String, Integer> getHistory() {

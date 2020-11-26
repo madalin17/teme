@@ -38,7 +38,7 @@ public abstract class ShowInput {
     }
 
     /**
-     * @return the number of times a video apprears in a favorite list
+     * @return the number of times a video appears in a favorite list
      */
     public int getNumberFavorite() {
         return numberFavorite;

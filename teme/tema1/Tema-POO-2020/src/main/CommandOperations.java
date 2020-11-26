@@ -14,9 +14,10 @@ public final class CommandOperations {
     }
 
     /**
+     * Function verifies if the video exists in the movie/serial database
      * @param input database
      * @param title video
-     * @return true if the video exists in input, false otherwise
+     * @return false if the video exists in input, true otherwise
      */
     public static boolean checkVideoExistence(final Input input, final String title) {
         boolean movieExists = false;
@@ -37,17 +38,15 @@ public final class CommandOperations {
             }
         }
 
-        if (!movieExists) {
-            return false;
-        }
-        return true;
+        return !movieExists;
     }
 
     /**
+     * Function verifies if an user already seen a movie
      * @param input database
      * @param username user
      * @param title name of the movie
-     * @return true if title exists in user's history and false otherwise
+     * @return false if title exists in user's history, true otherwise
      */
     public static boolean checkVideoAsSeen(final Input input,
                                            final String username, final String title) {
@@ -55,12 +54,12 @@ public final class CommandOperations {
             if (user.getUsername().equals(username)) {
                 for (Map.Entry<String, Integer> videoEntry : user.getHistory().entrySet()) {
                     if (videoEntry.getKey().equals(title)) {
-                        return true;
+                        return false;
                     }
                 }
             }
         }
-        return false;
+        return true;
     }
 
 }

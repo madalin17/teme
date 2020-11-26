@@ -15,7 +15,7 @@ public final class MovieInputData extends ShowInput {
      */
     private final int duration;
 
-    private Map<String, Double> ratings = new HashMap<String, Double>();
+    private final Map<String, Double> ratings = new HashMap<>();
 
     public MovieInputData(final String title, final ArrayList<String> cast,
                           final ArrayList<String> genres, final int year,
@@ -41,8 +41,7 @@ public final class MovieInputData extends ShowInput {
             sum += entry.getValue();
             count++;
         }
-        double rating = (double) sum / count;
-        return rating;
+        return sum / count;
     }
 
     public int getDuration() {

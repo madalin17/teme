@@ -14,6 +14,7 @@ public final class MapUtil {
     }
 
     /**
+     * Function returns a map sorted by values
      * @param map map to be sorted
      * @param <K> type of key
      * @param <V> type of value

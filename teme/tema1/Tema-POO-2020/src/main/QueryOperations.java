@@ -19,15 +19,16 @@ public final class QueryOperations {
     }
 
     /**
+     * Function returns correct message to be printed in output for every query
      * @param array list of all movies/series/users/actors that pass some conditions
      * @param number N movies/series/users/actors to be shown in output
-     * @param sortType string that determines if the sorting is ascendent or descendent
+     * @param sortType string that determines if the sorting is ascending or descending
      * @return string to be shown in output
      */
     public static String printList(final ArrayList<String> array,
                                    final int number, final String sortType) {
         int newNumber = number;
-        String message = "Query result: [";
+        StringBuilder message = new StringBuilder("Query result: [");
         if (sortType.equals(Constants.DESC)) {
             Collections.reverse(array);
         }
@@ -35,17 +36,19 @@ public final class QueryOperations {
             newNumber = array.size();
         }
         for (int i = 0; i < newNumber - 1; i++) {
-            message += array.get(i);
-            message += ", ";
+            message.append(array.get(i));
+            message.append(", ");
         }
         if (newNumber != 0) {
-            message += array.get(newNumber - 1);
+            message.append(array.get(newNumber - 1));
         }
-        message += ']';
-        return message;
+        message.append(']');
+        return message.toString();
     }
 
     /**
+     * Function returns a sorted by value Treemap of movies/series filtered by an year and a genre,
+     * where the value represents corresponding rating
      * @param input the database
      * @param objectType determines if we operate on shows or movies
      * @param year attribute of a movie
@@ -74,12 +77,14 @@ public final class QueryOperations {
     }
 
     /**
+     * Function returns a sorted by value Treemap of movies/series filtered by an year and a genre,
+     * where the value represents corresponding times it appears in favorite lists for users
      * @param input the database
      * @param objectType determines if we operate on shows or movies
      * @param year attribute of a movie
      * @param genre attribute of a movie
      * @return a TreeMap with serial or movie titles
-     * and the number of times it apears in users's favorite lists for a year and a genre
+     * and the number of times it appears in users' favorite lists for a year and a genre
      */
     public static Map<String, Integer> favoriteMap(final Input input, final String objectType,
                                                    final int year, final String genre) {
@@ -138,6 +143,8 @@ public final class QueryOperations {
     }
 
     /**
+     * Function returns a sorted by value Treemap of movies/series filtered by an year and a genre,
+     * where the value represents corresponding total duration
      * @param input the database
      * @param objectType determines if we operate on shows or movies
      * @param year attribute of a movie
@@ -166,6 +173,8 @@ public final class QueryOperations {
     }
 
     /**
+     * Function returns a sorted by value Treemap of movies/series filtered by an year and a genre,
+     * where the value represents corresponding times a show was viewed by users
      * @param input the database
      * @param objectType determines if we operate on shows or movies
      * @param year attribute of a movie

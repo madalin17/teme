@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.List;
 
 public final class Recommendation {
@@ -22,6 +21,7 @@ public final class Recommendation {
     }
 
     /**
+     * Function standard returns first unseen video in the database for an user
      * @param input database
      * @param username user to perform recommendation on
      * @return string to be shown in output
@@ -30,6 +30,7 @@ public final class Recommendation {
         UserInputData user = RecommendationOperations.thisUser(input, username);
         for (MovieInputData movie : input.getMovies()) {
             boolean movieExists = false;
+            assert user != null;
             for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
                 if (movie.getTitle().equals(entry.getKey())) {
                     movieExists = true;
@@ -42,6 +43,7 @@ public final class Recommendation {
         }
         for (SerialInputData serial : input.getSerials()) {
             boolean movieExists = false;
+            assert user != null;
             for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
                 if (serial.getTitle().equals(entry.getKey())) {
                     movieExists = true;
@@ -56,6 +58,9 @@ public final class Recommendation {
     }
 
     /**
+     * Function bestUnseen creates a LinkedHashMap sorted descending by rating that contains
+     * all unseen videos of an user and their rating
+     * and if the map is not empty returns first video(with maximum rating)
      * @param input database
      * @param username user to perform recommendation on
      * @return string to be shown in output
@@ -65,21 +70,19 @@ public final class Recommendation {
         if (user == null) {
             return "BestRatedUnseenRecommendation cannot be applied!";
         }
-        ArrayList<String> titles = new ArrayList<String>(user.getHistory().keySet());
-        Map<String, Double> map = new LinkedHashMap<String, Double>();
+        ArrayList<String> titles = new ArrayList<>(user.getHistory().keySet());
+        Map<String, Double> map = new LinkedHashMap<>();
 
-        for (MovieInputData movie : input.getMovies()) {
-            if (!titles.contains(movie.getTitle())) {
-                map.put(movie.getTitle(), movie.getRating());
-            }
-        }
-        for (SerialInputData serial : input.getSerials()) {
-            if (!titles.contains(serial.getTitle())) {
-                map.put(serial.getTitle(), serial.getRating());
-            }
-        }
+        input.getMovies()
+                .stream()
+                .filter(movie -> !titles.contains(movie.getTitle()))
+                .forEach(movie -> map.put(movie.getTitle(), movie.getRating()));
+        input.getSerials()
+                .stream()
+                .filter(serial -> !titles.contains(serial.getTitle()))
+                .forEach(serial -> map.put(serial.getTitle(), serial.getRating()));
 
-        Map<String, Double> sortedMap = new LinkedHashMap<String, Double>();
+        Map<String, Double> sortedMap = new LinkedHashMap<>();
         map.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
@@ -89,11 +92,15 @@ public final class Recommendation {
         if (sortedMap.size() == 0) {
             return "BestRatedUnseenRecommendation cannot be applied!";
         }
-        ArrayList<String> bestUnseen = new ArrayList<String>(sortedMap.keySet());
+        ArrayList<String> bestUnseen = new ArrayList<>(sortedMap.keySet());
         return "BestRatedUnseenRecommendation result: " + bestUnseen.get(0);
     }
 
     /**
+     * Function popular creates a TreeMap that contains genres and number of views for each genre
+     * The map is sorted descending and we remember the first genre for witch the user has at least
+     * a video that has not seen yet
+     * We return the first unseen movie in database from this genre
      * @param input database
      * @param username user to perform recommendation on
      * @return string to be shown in output
@@ -104,7 +111,7 @@ public final class Recommendation {
             return "PopularRecommendation cannot be applied";
         }
 
-        ArrayList<String> seenVideos = new ArrayList<String>();
+        ArrayList<String> seenVideos = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
             seenVideos.add(entry.getKey());
         }
@@ -112,17 +119,17 @@ public final class Recommendation {
         QueryOperations.mostViewedMap(input, Constants.MOVIES, 0, null);
         QueryOperations.mostViewedMap(input, Constants.SHOWS, 0, null);
 
-        Map<String, ViewsByGenre> map = new TreeMap<String, ViewsByGenre>();
-        for (MovieInputData movie : input.getMovies()) {
-            if (movie.getViews() != 0) {
-                for (String genre : movie.getGenres()) {
+        Map<String, ViewsByGenre> map = new TreeMap<>();
+        for (MovieInputData movieInputData : input.getMovies()) {
+            if (movieInputData.getViews() != 0) {
+                for (String genre : movieInputData.getGenres()) {
                     if (!map.containsKey(genre)) {
-                        map.put(genre, new ViewsByGenre(movie.getViews()));
+                        map.put(genre, new ViewsByGenre(movieInputData.getViews()));
                     } else {
                         for (Map.Entry<String, ViewsByGenre> entry : map.entrySet()) {
                             if (entry.getKey().equals(genre)) {
                                 int views = entry.getValue().getTotalNumberOfViews()
-                                        + movie.getViews();
+                                        + movieInputData.getViews();
                                 entry.getValue().setTotalNumberOfViews(views);
                                 break;
                             }
@@ -182,6 +189,9 @@ public final class Recommendation {
     }
 
     /**
+     * Function favorite creates a LinkedHashMap that contains a movie/serial
+     * and the number of times it appears is users' favorites lists
+     * The map is sorted descending by value and returns first unseen video
      * @param input database
      * @param username user to perform recommendation on
      * @return string to be shown in output
@@ -191,12 +201,9 @@ public final class Recommendation {
         if (thisUser == null || !thisUser.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "FavoriteRecommendation cannot be applied!";
         }
-        ArrayList<String> seenVideos = new ArrayList<String>();
-        for (Map.Entry<String, Integer> entry : thisUser.getHistory().entrySet()) {
-            seenVideos.add(entry.getKey());
-        }
+        ArrayList<String> seenVideos = new ArrayList<>(thisUser.getHistory().keySet());
 
-        Map<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<>();
         for (MovieInputData movie : input.getMovies()) {
             movie.setNumberFavorite(0);
         }
@@ -241,14 +248,13 @@ public final class Recommendation {
             }
         }
 
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
         map.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
 
-        Set<String> vids = sortedMap.keySet();
-        List<String> videos = new ArrayList<>(vids);
+        List<String> videos = new ArrayList<>(sortedMap.keySet());
         for (String video : videos) {
             if (!seenVideos.contains(video)) {
                 return "FavoriteRecommendation result: " + video;
@@ -258,6 +264,8 @@ public final class Recommendation {
     }
 
     /**
+     * Function search creates a sorted by ratings TreeMap with movies from the same genre
+     * and their rating; all unseen movies from this map are moved to an arraylist shown to output
      * @param input database
      * @param username user to perform recommendation on
      * @return string to be shown in output
@@ -267,7 +275,7 @@ public final class Recommendation {
         if (user == null || !user.getSubscriptionType().equals(Constants.PREMIUM)) {
             return "SearchRecommendation cannot be applied";
         }
-        ArrayList<String> seenVideos = new ArrayList<String>();
+        ArrayList<String> seenVideos = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
             seenVideos.add(entry.getKey());
         }
@@ -278,15 +286,15 @@ public final class Recommendation {
                 QueryOperations.ratingsMap(input, Constants.SHOWS, 0, genre);
 
         Map<String, Double> map = new TreeMap<>(movieMap);
-        serialMap.forEach((key, value) -> map.put(key, value));
+        serialMap.forEach(map::put);
         Map<String, Double> sortedMap = MapUtil.sortByValues(map);
 
-        ArrayList<String> sortedVideos = new ArrayList<String>();
-        for (Map.Entry<String, Double> entry : sortedMap.entrySet()) {
-            if (!seenVideos.contains(entry.getKey())) {
-                sortedVideos.add(entry.getKey());
+        ArrayList<String> sortedVideos = new ArrayList<>();
+        sortedMap.forEach((key, value) -> {
+            if (!seenVideos.contains(key)) {
+                sortedVideos.add(key);
             }
-        }
+        });
 
         if (sortedVideos.size() == 0) {
             return "SearchRecommendation cannot be applied!";

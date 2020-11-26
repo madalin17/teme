@@ -20,7 +20,7 @@ public final class Season {
     /**
      * List of ratings for each season
      */
-    private Map<String, Double> ratings = new HashMap<String, Double>();
+    private Map<String, Double> ratings = new HashMap<>();
 
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;

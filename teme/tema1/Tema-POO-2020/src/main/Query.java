@@ -31,6 +31,8 @@ public final class Query {
         }
 
         /**
+         * Function ratings creates a sorted by values TreeMap with usernames and number of ratings
+         * and prints the first/last @param number keys of the map
          * @param input database
          * @param number N users to be shown in output
          * @param sortType sorting type, if ascending or descending
@@ -38,7 +40,6 @@ public final class Query {
          */
         public static String ratings(final Input input, final int number, final String sortType) {
             SortedMap<String, Integer> mapOfRatings = new TreeMap<>();
-            ArrayList<String> sortedUsers = new ArrayList<>();
 
             for (UserInputData user : input.getUsers()) {
                 if (user.getNumberOfRatings() != 0) {
@@ -47,9 +48,7 @@ public final class Query {
             }
             Map<String, Integer> sortedMapOfRatings = MapUtil.sortByValues(mapOfRatings);
 
-            for (Map.Entry<String, Integer> entry : sortedMapOfRatings.entrySet()) {
-                sortedUsers.add(entry.getKey());
-            }
+            ArrayList<String> sortedUsers = new ArrayList<>(sortedMapOfRatings.keySet());
             return QueryOperations.printList(sortedUsers, number, sortType);
         }
     }
@@ -61,6 +60,7 @@ public final class Query {
         }
 
         /**
+         * Function rating creates a list of movies/serials sorted by year and genre and rating
          * @param input database
          * @param number N videos to be shown in output
          * @param objectType if movies or series
@@ -71,16 +71,15 @@ public final class Query {
          */
         public static String rating(final Input input, final int number, final String objectType,
                                     final String sortType, final int year, final String genre) {
-            ArrayList<String> sortedVideos = new ArrayList<String>();
             Map<String, Double> sortedMapOfRatings =
                     QueryOperations.ratingsMap(input, objectType, year, genre);
-            for (Map.Entry<String, Double> entry : sortedMapOfRatings.entrySet()) {
-                sortedVideos.add(entry.getKey());
-            }
+            ArrayList<String> sortedVideos = new ArrayList<>(sortedMapOfRatings.keySet());
             return QueryOperations.printList(sortedVideos, number, sortType);
         }
 
         /**
+         * Function favorite creates a list of movies/serials sorted by year, genre and
+         * number of times they appear in users' favorites lists
          * @param input database
          * @param number N videos to be shown in output
          * @param objectType if movies or series
@@ -91,16 +90,14 @@ public final class Query {
          */
         public static String favorite(final Input input, final int number, final String objectType,
                                       final String sortType, final int year, final String genre) {
-            ArrayList<String> sortedFavorites = new ArrayList<String>();
             Map<String, Integer> sortedFavoriteMap =
                     QueryOperations.favoriteMap(input, objectType, year, genre);
-            for (Map.Entry<String, Integer> entry : sortedFavoriteMap.entrySet()) {
-                sortedFavorites.add(entry.getKey());
-            }
+            ArrayList<String> sortedFavorites = new ArrayList<>(sortedFavoriteMap.keySet());
             return QueryOperations.printList(sortedFavorites, number, sortType);
         }
 
         /**
+         * Function longest creates a list of movies/serials sorted by year, genre and duration
          * @param input database
          * @param number N videos to be shown in output
          * @param objectType if movies or series
@@ -111,16 +108,14 @@ public final class Query {
          */
         public static String longest(final Input input, final int number, final String objectType,
                                      final String sortType, final int year, final String genre) {
-            ArrayList<String> sortedLongest = new ArrayList<String>();
             Map<String, Integer> sortedLongestMap =
                     QueryOperations.longestMap(input, objectType, year, genre);
-            for (Map.Entry<String, Integer> entry : sortedLongestMap.entrySet()) {
-                sortedLongest.add(entry.getKey());
-            }
+            ArrayList<String> sortedLongest = new ArrayList<>(sortedLongestMap.keySet());
             return QueryOperations.printList(sortedLongest, number, sortType);
         }
 
         /**
+         * Function mostViewed creates a list of movies sorted by year, genre and views
          * @param input database
          * @param number N videos to be shown in output
          * @param objectType if movies or series
@@ -132,12 +127,9 @@ public final class Query {
         public static String mostViewed(final Input input, final int number,
                                         final String objectType, final String sortType,
                                         final int year, final String genre) {
-            ArrayList<String> sortedMostViewed = new ArrayList<String>();
             Map<String, Integer> sortedMostViewedMap =
                     QueryOperations.mostViewedMap(input, objectType, year, genre);
-            for (Map.Entry<String, Integer> entry : sortedMostViewedMap.entrySet()) {
-                sortedMostViewed.add(entry.getKey());
-            }
+            ArrayList<String> sortedMostViewed = new ArrayList<>(sortedMostViewedMap.keySet());
             return QueryOperations.printList(sortedMostViewed, number, sortType);
         }
     }
@@ -149,6 +141,9 @@ public final class Query {
         }
 
         /**
+         * Function average creates a sorted by ratings TreeMap that contains videos and
+         * a class that contains sum of ratings and number of ratings for each actor
+         * and the first or last @param number of keys are shown in output
          * @param input database
          * @param number N users to be shown in output
          * @param sortType sorting type, if ascending or descending
@@ -160,7 +155,7 @@ public final class Query {
             QueryOperations.ratingsMap(input, Constants.MOVIES, 0, null);
             QueryOperations.ratingsMap(input, Constants.SHOWS, 0, null);
 
-            Map<String, ActorRating> map = new TreeMap<String, ActorRating>();
+            Map<String, ActorRating> map = new TreeMap<>();
             for (MovieInputData movie : input.getMovies()) {
                 for (String actor : movie.getCast()) {
                     if (!map.containsKey(actor) && movie.getRating() != 0) {
@@ -202,6 +197,9 @@ public final class Query {
         }
 
         /**
+         * Function awards creates a sorted by number of total awards Treemap containing
+         * an actor name and a class that remembers number of total awards and a list of awards
+         * and the first or last @param number of keys are shown in output
          * @param input database
          * @param number N users to be shown in output
          * @param sortType sorting type, if ascending or descending
@@ -212,7 +210,7 @@ public final class Query {
                                     final String sortType, final List<String> awards) {
             int correctAwards = awards.size();
 
-            Map<String, NumberOfAwards> map = new TreeMap<String, NumberOfAwards>();
+            Map<String, NumberOfAwards> map = new TreeMap<>();
             for (ActorInputData actor : input.getActors()) {
                 if (!map.containsKey(actor.getName())) {
                     map.put(actor.getName(), new NumberOfAwards(0, 0));
@@ -227,9 +225,9 @@ public final class Query {
                                 && awards.contains(award.getKey().toString())
                                 && !entry.getValue().getAwards()
                                 .contains(award.getKey().toString())) {
-                            int newCorrectawards = entry.getValue().getCorrectAwards() + 1;
+                            int newCorrectAwards = entry.getValue().getCorrectAwards() + 1;
                             entry.getValue().getAwards().add(award.getKey().toString());
-                            entry.getValue().setCorrectAwards(newCorrectawards);
+                            entry.getValue().setCorrectAwards(newCorrectAwards);
                             entry.getValue().setTotalAwards(totalAwards);
                         }
                     }
@@ -249,6 +247,9 @@ public final class Query {
         }
 
         /**
+         * Function filterDescription verifies if an actor's description contains all words listed
+         * in case insensitive and adds actor's name to a list in this case
+         * List is sorted and the first/last @param number actors are shown in output
          * @param input database
          * @param number N users to be shown in output
          * @param sortType sorting type, if ascending or descending
@@ -258,7 +259,7 @@ public final class Query {
         public static String filterDescription(final Input input, final int number,
                                                final String sortType, final List<String> words) {
             boolean filter;
-            ArrayList<String> actors = new ArrayList<String>();
+            ArrayList<String> actors = new ArrayList<>();
 
             for (ActorInputData actor : input.getActors()) {
                 filter = true;

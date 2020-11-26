@@ -12,7 +12,7 @@ public final class NumberOfAwards implements Comparable<NumberOfAwards> {
     private int totalAwards;
 
     public NumberOfAwards(final int correctAwards, final int totalAwards) {
-        this.awards = new ArrayList<String>();
+        this.awards = new ArrayList<>();
         this.correctAwards = correctAwards;
         this.totalAwards = totalAwards;
     }

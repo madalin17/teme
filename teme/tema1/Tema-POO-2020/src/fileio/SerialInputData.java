@@ -57,11 +57,10 @@ public final class SerialInputData extends ShowInput {
                     serialCount++;
                 }
             }
-            double seasonRating = (double) serialSum / serialCount;
+            double seasonRating = serialSum / serialCount;
             sum += seasonRating;
         }
-        double rating = (double) sum / count;
-        return rating;
+        return sum / count;
     }
 
     public int getNumberSeason() {

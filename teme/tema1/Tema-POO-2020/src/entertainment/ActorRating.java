@@ -32,7 +32,7 @@ public final class ActorRating implements Comparable<ActorRating> {
      */
     public double getRating() {
         if (count != 0) {
-            return (double) ratingSum / count;
+            return ratingSum / count;
         }
         return -1;
     }

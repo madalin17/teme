@@ -1,7 +1,7 @@
 package entertainment;
 
 public final class ViewsByGenre implements Comparable<ViewsByGenre> {
-    private int totalNumberOfViews = 0;
+    private int totalNumberOfViews;
 
     public ViewsByGenre(final int totalNumberOfViews) {
         this.totalNumberOfViews = totalNumberOfViews;

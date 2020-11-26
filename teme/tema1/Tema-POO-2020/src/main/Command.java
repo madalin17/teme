@@ -5,6 +5,7 @@ import fileio.Input;
 import fileio.MovieInputData;
 import fileio.SerialInputData;
 import fileio.UserInputData;
+
 import java.util.Map;
 
 public final class Command {
@@ -14,6 +15,9 @@ public final class Command {
     }
 
     /**
+     * Function favorite searches the user and verifies if the movie was seen
+     * If yes, it verifies if it already exists in user's favorite movies list
+     * If not, it adds it and returns a success message; if nor, returns error messages
      * @param input database
      * @param username user that wants to add a film to his favorites list
      * @param title name of video to be put in a favorites list
@@ -23,7 +27,7 @@ public final class Command {
                                   final String username, final String title) {
         UserInputData thisUser = null;
 
-        if (!CommandOperations.checkVideoExistence(input, title)) {
+        if (CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
         for (UserInputData user : input.getUsers()) {
@@ -33,6 +37,7 @@ public final class Command {
             }
         }
 
+        assert thisUser != null;
         if (thisUser.getHistory().containsKey(title)) {
             if (thisUser.getFavoriteMovies() != null) {
                 for (String movieTitle : thisUser.getFavoriteMovies()) {
@@ -51,7 +56,9 @@ public final class Command {
     }
 
     /**
-     *
+     * Function view searches the user and verifies if the movie already exist in his history
+     * If yes, it increases the number of times it was viewed
+     * If not, it creates a new entry in user's history with the show's title being only once seen
      * @param input database
      * @param username user that saw the video
      * @param title title of seen video
@@ -61,7 +68,7 @@ public final class Command {
                               final String username, final String title) {
         int onceSeen = 1;
         UserInputData thisUser = null;
-        if (!CommandOperations.checkVideoExistence(input, title)) {
+        if (CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
         for (UserInputData user : input.getUsers()) {
@@ -71,6 +78,7 @@ public final class Command {
             }
         }
 
+        assert thisUser != null;
         for (Map.Entry<String, Integer> viewedVideo : thisUser.getHistory().entrySet()) {
             if (viewedVideo.getKey().equals(title)) {
                 Integer numberViews = viewedVideo.getValue() + onceSeen;
@@ -84,6 +92,10 @@ public final class Command {
     }
 
     /**
+     * Function ratingMovie searches the user and verifies if movie was already rated
+     * If yes, it returns an error message
+     * If not, creates a new entry in the movie's ratings with the username and the rating
+     * And return a success message
      * @param input database
      * @param username user that rates
      * @param title name of video to be rated
@@ -92,7 +104,7 @@ public final class Command {
      */
     public static String ratingMovie(final Input input, final String username,
                                      final String title, final double grade) {
-        if (!CommandOperations.checkVideoAsSeen(input, username, title)) {
+        if (CommandOperations.checkVideoAsSeen(input, username, title)) {
             return "error -> " + title + " is not seen";
         }
 
@@ -118,6 +130,10 @@ public final class Command {
     }
 
     /**
+     * Function ratingSeries searches the user and verifies if any serial season was already rated
+     * If yes, it returns an error message
+     * If not, creates a new entry in the current season's ratings with the username and the rating
+     * And returns a success message
      * @param input database
      * @param username user that rates
      * @param title name of video to be rated
@@ -128,7 +144,7 @@ public final class Command {
     public static String ratingSeries(final Input input,
                                       final String username, final String title,
                                       final double grade, final int seasonNumber) {
-        if (!CommandOperations.checkVideoAsSeen(input, username, title)) {
+        if (CommandOperations.checkVideoAsSeen(input, username, title)) {
             return "error -> " + title + " is not seen";
         }
 
