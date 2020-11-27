@@ -1,6 +1,8 @@
 #  Dobrita George-Madalin - 324CAb
 ##  Tema1 - POO - VideosDB
 
+In rezolvarea problemei am folosit TreeMap daca am avut nevoie de anumite date ordonate dupa nume, nu numai dupa valoare si LinkedHashMap daca am avut nevoie ca datele sa fie ordonate dupa ordinea de aparitie in baza de date.
+
 ### Comenzile:
 Implementate prin functii statice in clasele Command si CommandOperations.
 Din lista de user il caut pe acela cu username-ul dat ca parametru fiecarei functii. In final, functiile returneaza un mesaj de success sau de eroare care este afisat impreuna cu id-ul actiunii in output.
