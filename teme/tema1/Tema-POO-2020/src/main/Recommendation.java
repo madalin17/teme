@@ -28,30 +28,15 @@ public final class Recommendation {
      */
     public static String standard(final Input input, final String username) {
         UserInputData user = RecommendationOperations.thisUser(input, username);
+        assert user != null;
         for (MovieInputData movie : input.getMovies()) {
-            boolean movieExists = false;
-            assert user != null;
-            for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
-                if (movie.getTitle().equals(entry.getKey())) {
-                    movieExists = true;
-                    break;
-                }
-            }
-            if (!movieExists) {
-                return "StandardRecommendation result: " + movie.getTitle();
+            if (RecommendationOperations.verifyUnseenVideo(movie, user) != null) {
+                return RecommendationOperations.verifyUnseenVideo(movie, user);
             }
         }
         for (SerialInputData serial : input.getSerials()) {
-            boolean movieExists = false;
-            assert user != null;
-            for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
-                if (serial.getTitle().equals(entry.getKey())) {
-                    movieExists = true;
-                    break;
-                }
-            }
-            if (!movieExists) {
-                return "StandardRecommendation result: " + serial.getTitle();
+            if (RecommendationOperations.verifyUnseenVideo(serial, user) != null) {
+                return RecommendationOperations.verifyUnseenVideo(serial, user);
             }
         }
         return "StandardRecommendation cannot be applied!";
@@ -67,9 +52,7 @@ public final class Recommendation {
      */
     public static String bestUnseen(final Input input, final String username) {
         UserInputData user = RecommendationOperations.thisUser(input, username);
-        if (user == null) {
-            return "BestRatedUnseenRecommendation cannot be applied!";
-        }
+        assert user != null;
         ArrayList<String> titles = new ArrayList<>(user.getHistory().keySet());
         Map<String, Double> map = new LinkedHashMap<>();
 
@@ -88,7 +71,6 @@ public final class Recommendation {
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
 
-        System.out.println();
         if (sortedMap.size() == 0) {
             return "BestRatedUnseenRecommendation cannot be applied!";
         }
@@ -120,42 +102,10 @@ public final class Recommendation {
         QueryOperations.mostViewedMap(input, Constants.SHOWS, 0, null);
 
         Map<String, ViewsByGenre> map = new TreeMap<>();
-        for (MovieInputData movieInputData : input.getMovies()) {
-            if (movieInputData.getViews() != 0) {
-                for (String genre : movieInputData.getGenres()) {
-                    if (!map.containsKey(genre)) {
-                        map.put(genre, new ViewsByGenre(movieInputData.getViews()));
-                    } else {
-                        for (Map.Entry<String, ViewsByGenre> entry : map.entrySet()) {
-                            if (entry.getKey().equals(genre)) {
-                                int views = entry.getValue().getTotalNumberOfViews()
-                                        + movieInputData.getViews();
-                                entry.getValue().setTotalNumberOfViews(views);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (SerialInputData serial : input.getSerials()) {
-            if (serial.getViews() != 0) {
-                for (String genre : serial.getGenres()) {
-                    if (!map.containsKey(genre)) {
-                        map.put(genre, new ViewsByGenre(serial.getViews()));
-                    } else {
-                        for (Map.Entry<String, ViewsByGenre> entry : map.entrySet()) {
-                            if (entry.getKey().equals(genre)) {
-                                int views = entry.getValue().getTotalNumberOfViews()
-                                        + serial.getViews();
-                                entry.getValue().setTotalNumberOfViews(views);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        input.getMovies().forEach(movie ->
+                RecommendationOperations.editViewsByGenreMap(map, movie));
+        input.getSerials().forEach(serial ->
+                RecommendationOperations.editViewsByGenreMap(map, serial));
 
         Map<String, ViewsByGenre> sortedMap = MapUtil.sortByValues(map);
 
@@ -204,49 +154,34 @@ public final class Recommendation {
         ArrayList<String> seenVideos = new ArrayList<>(thisUser.getHistory().keySet());
 
         Map<String, Integer> map = new HashMap<>();
-        for (MovieInputData movie : input.getMovies()) {
-            movie.setNumberFavorite(0);
-        }
+        input.getMovies().forEach(movie -> movie.setNumberFavorite(0));
+        input.getSerials().forEach(serial -> serial.setNumberFavorite(0));
         for (UserInputData user : input.getUsers()) {
             if (user.getFavoriteMovies() != null) {
-                for (String title : user.getFavoriteMovies()) {
-                    for (MovieInputData movie : input.getMovies()) {
-                        if (movie.getTitle().equals(title)) {
+                for (MovieInputData movie : input.getMovies()) {
+                    if (user.getFavoriteMovies().contains(movie.getTitle())) {
                             int favorite = movie.getNumberFavorite();
-                            favorite++;
-                            movie.setNumberFavorite(favorite);
-                            break;
-                        }
+                            movie.setNumberFavorite(++favorite);
+                    }
+                }
+                for (SerialInputData serial : input.getSerials()) {
+                    if (user.getFavoriteMovies().contains(serial.getTitle())) {
+                        int favorite = serial.getNumberFavorite();
+                        serial.setNumberFavorite(++favorite);
                     }
                 }
             }
         }
-        for (MovieInputData movie : input.getMovies()) {
-            if (movie.getNumberFavorite() != 0) {
-                map.put(movie.getTitle(), movie.getNumberFavorite());
-            }
-        }
-        for (SerialInputData serial : input.getSerials()) {
-            serial.setNumberFavorite(0);
-        }
-        for (UserInputData user : input.getUsers()) {
-            if (user.getFavoriteMovies() != null) {
-                for (String title : user.getFavoriteMovies()) {
-                    for (SerialInputData serial : input.getSerials()) {
-                        if (serial.getTitle().equals(title)) {
-                            int favorite = serial.getNumberFavorite();
-                            serial.setNumberFavorite(++favorite);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        for (SerialInputData serial : input.getSerials()) {
-            if (serial.getNumberFavorite() != 0) {
-                map.put(serial.getTitle(), serial.getNumberFavorite());
-            }
-        }
+        input.getMovies()
+                .stream()
+                .filter(movie -> movie.getNumberFavorite() != 0
+                            && !seenVideos.contains(movie.getTitle()))
+                .forEach(movie -> map.put(movie.getTitle(), movie.getNumberFavorite()));
+        input.getSerials()
+                .stream()
+                .filter(serial -> serial.getNumberFavorite() != 0
+                            && !seenVideos.contains(serial.getTitle()))
+                .forEach(serial -> map.put(serial.getTitle(), serial.getNumberFavorite()));
 
         Map<String, Integer> sortedMap = new LinkedHashMap<>();
         map.entrySet()
@@ -255,10 +190,8 @@ public final class Recommendation {
                 .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
 
         List<String> videos = new ArrayList<>(sortedMap.keySet());
-        for (String video : videos) {
-            if (!seenVideos.contains(video)) {
-                return "FavoriteRecommendation result: " + video;
-            }
+        if (videos.size() != 0) {
+            return "FavoriteRecommendation result: " + videos.get(0);
         }
         return "FavoriteRecommendation cannot be applied!";
     }
@@ -277,21 +210,23 @@ public final class Recommendation {
         }
         ArrayList<String> seenVideos = new ArrayList<>(user.getHistory().keySet());
         Map<String, Double> map = new TreeMap<>();
-        input.getMovies().forEach(x -> {
-                if (x.getGenres().contains(genre) && !seenVideos.contains(x.getTitle())) {
-                    map.put(x.getTitle(), x.getRating());
-                }
-        });
-        input.getSerials().forEach(x -> {
-            if (x.getGenres().contains(genre) && !seenVideos.contains(x.getTitle())) {
-                map.put(x.getTitle(), x.getRating());
-            }
-        });
+        input.getMovies()
+                .stream()
+                .filter(movie -> movie.getGenres().contains(genre)
+                        && !seenVideos.contains(movie.getTitle()))
+                .forEach(movie -> map.put(movie.getTitle(), movie.getRating()));
+        input.getSerials()
+                .stream()
+                .filter(serial -> serial.getGenres().contains(genre)
+                            && !seenVideos.contains(serial.getTitle()))
+                .forEach(serial -> map.put(serial.getTitle(), serial.getRating()));
+
         Map<String, Double> sortedMap = MapUtil.sortByValues(map);
         ArrayList<String> sortedVideos = new ArrayList<>(sortedMap.keySet());
         if (sortedVideos.size() == 0) {
             return "SearchRecommendation cannot be applied!";
         }
-        return RecommendationOperations.printList(sortedVideos, sortedVideos.size(), Constants.ASC);
+        return QueryOperations.printList(Constants.RECOMMENDATION_OPERATION,
+                                            sortedVideos, sortedVideos.size(), Constants.ASC);
     }
 }

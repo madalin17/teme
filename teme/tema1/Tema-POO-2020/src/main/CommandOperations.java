@@ -62,4 +62,36 @@ public final class CommandOperations {
         return true;
     }
 
+    /**
+     * @param input database
+     * @param username of user to be found
+     * @return corresponding user from database
+     */
+    public static UserInputData getUser(final Input input, final String username) {
+        UserInputData thisUser = null;
+        for (UserInputData user : input.getUsers()) {
+            if (user.getUsername().equals(username)) {
+                thisUser = user;
+                break;
+            }
+        }
+        assert thisUser != null;
+        return thisUser;
+    }
+
+    /**
+     * Function increments the number of videos an user has rated
+     * @param input database
+     * @param username of user to perform operation on
+     */
+    public static void incrementRatings(final Input input, final String username) {
+        for (UserInputData user : input.getUsers()) {
+            if (user.getUsername().equals(username)) {
+                int currRatings = user.getNumberOfRatings();
+                user.setNumberOfRatings(++currRatings);
+                break;
+            }
+        }
+    }
+
 }

@@ -89,5 +89,7 @@ public final class Constants {
     public static final String PREMIUM = "PREMIUM";
     public static final String POPULAR = "popular";
     public static final String AVERAGE = "average";
+    public static final String QUERY_OPERATION = "Query";
+    public static final String RECOMMENDATION_OPERATION = "SearchRecommendation";
 
 }

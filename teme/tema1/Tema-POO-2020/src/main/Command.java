@@ -25,19 +25,10 @@ public final class Command {
      */
     public static String favorite(final Input input,
                                   final String username, final String title) {
-        UserInputData thisUser = null;
-
         if (CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
-        for (UserInputData user : input.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                thisUser = user;
-                break;
-            }
-        }
-
-        assert thisUser != null;
+        UserInputData thisUser = CommandOperations.getUser(input, username);
         if (thisUser.getHistory().containsKey(title)) {
             if (thisUser.getFavoriteMovies() != null) {
                 for (String movieTitle : thisUser.getFavoriteMovies()) {
@@ -67,18 +58,10 @@ public final class Command {
     public static String view(final Input input,
                               final String username, final String title) {
         int onceSeen = 1;
-        UserInputData thisUser = null;
         if (CommandOperations.checkVideoExistence(input, title)) {
             return "error -> " + title + " is not in database";
         }
-        for (UserInputData user : input.getUsers()) {
-            if (user.getUsername().equals(username)) {
-                thisUser = user;
-                break;
-            }
-        }
-
-        assert thisUser != null;
+        UserInputData thisUser = CommandOperations.getUser(input, username);
         for (Map.Entry<String, Integer> viewedVideo : thisUser.getHistory().entrySet()) {
             if (viewedVideo.getKey().equals(title)) {
                 Integer numberViews = viewedVideo.getValue() + onceSeen;
@@ -116,13 +99,7 @@ public final class Command {
                     }
                 }
                 movie.getRatings().put(username, grade);
-                for (UserInputData user : input.getUsers()) {
-                    if (user.getUsername().equals(username)) {
-                        int currRatings = user.getNumberOfRatings();
-                        user.setNumberOfRatings(++currRatings);
-                        break;
-                    }
-                }
+                CommandOperations.incrementRatings(input, username);
                 return "success -> " + title + " was rated with " + grade + " by " + username;
             }
         }
@@ -158,13 +135,7 @@ public final class Command {
                         season.getRatings().put(username, grade);
                     }
                 }
-                for (UserInputData user : input.getUsers()) {
-                    if (user.getUsername().equals(username)) {
-                        int currRatings = user.getNumberOfRatings();
-                        user.setNumberOfRatings(++currRatings);
-                        break;
-                    }
-                }
+                CommandOperations.incrementRatings(input, username);
                 return "success -> " + title + " was rated with " + grade + " by " + username;
             }
         }

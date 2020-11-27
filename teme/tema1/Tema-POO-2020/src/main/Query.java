@@ -5,8 +5,6 @@ import common.Constants;
 import entertainment.ActorRating;
 import entertainment.NumberOfAwards;
 import fileio.Input;
-import fileio.SerialInputData;
-import fileio.MovieInputData;
 import fileio.ActorInputData;
 import fileio.UserInputData;
 import java.util.ArrayList;
@@ -49,7 +47,8 @@ public final class Query {
             Map<String, Integer> sortedMapOfRatings = MapUtil.sortByValues(mapOfRatings);
 
             ArrayList<String> sortedUsers = new ArrayList<>(sortedMapOfRatings.keySet());
-            return QueryOperations.printList(sortedUsers, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION,
+                                                sortedUsers, number, sortType);
         }
     }
 
@@ -74,7 +73,8 @@ public final class Query {
             Map<String, Double> sortedMapOfRatings =
                     QueryOperations.ratingsMap(input, objectType, year, genre);
             ArrayList<String> sortedVideos = new ArrayList<>(sortedMapOfRatings.keySet());
-            return QueryOperations.printList(sortedVideos, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION,
+                                                sortedVideos, number, sortType);
         }
 
         /**
@@ -93,7 +93,8 @@ public final class Query {
             Map<String, Integer> sortedFavoriteMap =
                     QueryOperations.favoriteMap(input, objectType, year, genre);
             ArrayList<String> sortedFavorites = new ArrayList<>(sortedFavoriteMap.keySet());
-            return QueryOperations.printList(sortedFavorites, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION,
+                                                sortedFavorites, number, sortType);
         }
 
         /**
@@ -111,7 +112,8 @@ public final class Query {
             Map<String, Integer> sortedLongestMap =
                     QueryOperations.longestMap(input, objectType, year, genre);
             ArrayList<String> sortedLongest = new ArrayList<>(sortedLongestMap.keySet());
-            return QueryOperations.printList(sortedLongest, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION,
+                                                sortedLongest, number, sortType);
         }
 
         /**
@@ -130,7 +132,8 @@ public final class Query {
             Map<String, Integer> sortedMostViewedMap =
                     QueryOperations.mostViewedMap(input, objectType, year, genre);
             ArrayList<String> sortedMostViewed = new ArrayList<>(sortedMostViewedMap.keySet());
-            return QueryOperations.printList(sortedMostViewed, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION,
+                                                sortedMostViewed, number, sortType);
         }
     }
 
@@ -150,50 +153,16 @@ public final class Query {
          * @return string to be shown in output
          */
         public static String average(final Input input, final int number, final String sortType) {
-            int oneRating = 1;
-
             QueryOperations.ratingsMap(input, Constants.MOVIES, 0, null);
             QueryOperations.ratingsMap(input, Constants.SHOWS, 0, null);
 
             Map<String, ActorRating> map = new TreeMap<>();
-            for (MovieInputData movie : input.getMovies()) {
-                for (String actor : movie.getCast()) {
-                    if (!map.containsKey(actor) && movie.getRating() != 0) {
-                        map.put(actor, new ActorRating(movie.getRating(), oneRating));
-                    } else {
-                        for (Map.Entry<String, ActorRating> entry : map.entrySet()) {
-                            if (entry.getKey().equals(actor) && movie.getRating() != 0) {
-                                double ratingSum =
-                                        entry.getValue().getRatingSum() + movie.getRating();
-                                int count = entry.getValue().getCount() + oneRating;
-                                entry.getValue().setRatingSum(ratingSum);
-                                entry.getValue().setCount(count);
-                            }
-                        }
-                    }
-                }
-            }
-            for (SerialInputData serial : input.getSerials()) {
-                for (String actor : serial.getCast()) {
-                    if (!map.containsKey(actor) && serial.getRating() != 0) {
-                        map.put(actor, new ActorRating(serial.getRating(), oneRating));
-                    } else {
-                        for (Map.Entry<String, ActorRating> entry : map.entrySet()) {
-                            if (entry.getKey().equals(actor) && serial.getRating() != 0) {
-                                double ratingSum =
-                                        entry.getValue().getRatingSum() + serial.getRating();
-                                int count = entry.getValue().getCount() + oneRating;
-                                entry.getValue().setRatingSum(ratingSum);
-                                entry.getValue().setCount(count);
-                            }
-                        }
-                    }
-                }
-            }
+            input.getMovies().forEach(movie -> QueryOperations.editActorRatingMap(map, movie));
+            input.getSerials().forEach(serial -> QueryOperations.editActorRatingMap(map, serial));
 
             Map<String, ActorRating> sortedMap = MapUtil.sortByValues(map);
             ArrayList<String> actors = new ArrayList<>(sortedMap.keySet());
-            return QueryOperations.printList(actors, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION, actors, number, sortType);
         }
 
         /**
@@ -243,7 +212,7 @@ public final class Query {
 
             Map<String, NumberOfAwards> sortedMap = MapUtil.sortByValues(allAwardsMap);
             ArrayList<String> actors = new ArrayList<>(sortedMap.keySet());
-            return QueryOperations.printList(actors, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION, actors, number, sortType);
         }
 
         /**
@@ -279,7 +248,7 @@ public final class Query {
             }
 
             Collections.sort(actors);
-            return QueryOperations.printList(actors, number, sortType);
+            return QueryOperations.printList(Constants.QUERY_OPERATION, actors, number, sortType);
         }
 
     }

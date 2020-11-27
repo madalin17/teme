@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.TreeMap;
 
 /**
- * @beginnersbook.com
+ * Function inspired from beginnersbook.com
  */
 public final class MapUtil {
 
@@ -21,18 +21,16 @@ public final class MapUtil {
      * @return map sorted by values
      */
     public static <K, V extends Comparable<V>> Map<K, V> sortByValues(final Map<K, V> map) {
-        Comparator<K> valueComparator = new Comparator<K>() {
-            public int compare(final K k1, final K k2) {
-                int compare = map.get(k1).compareTo(map.get(k2));
-                if (compare == 0) {
-                    return 1;
-                } else {
-                    return compare;
-                }
+        Comparator<K> valueComparator = (k1, k2) -> {
+            int compare = map.get(k1).compareTo(map.get(k2));
+            if (compare == 0) {
+                return 1;
+            } else {
+                return compare;
             }
         };
 
-        Map<K, V> sortedByValues = new TreeMap<K, V>(valueComparator);
+        Map<K, V> sortedByValues = new TreeMap<>(valueComparator);
         sortedByValues.putAll(map);
         return sortedByValues;
     }

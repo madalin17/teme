@@ -38,6 +38,11 @@ public abstract class ShowInput {
     }
 
     /**
+     * @return rating of show
+     */
+    public abstract double getRating();
+
+    /**
      * @return the number of times a video appears in a favorite list
      */
     public int getNumberFavorite() {
