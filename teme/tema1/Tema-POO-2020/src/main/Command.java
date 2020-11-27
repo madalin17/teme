@@ -151,16 +151,11 @@ public final class Command {
         for (SerialInputData serial : input.getSerials()) {
             if (serial.getTitle().equals(title)) {
                 for (Season season : serial.getSeasons()) {
-                    for (Map.Entry<String, Double> userRating : season.getRatings().entrySet()) {
-                        if (userRating.getKey().equals(username)) {
+                    if (season.getCurrentSeason() == seasonNumber) {
+                        if (season.getRatings().get(username) != null) {
                             return "error -> " + title + " has been already rated";
                         }
-                    }
-                }
-                for (Season season : serial.getSeasons()) {
-                    if (season.getCurrentSeason() == seasonNumber) {
                         season.getRatings().put(username, grade);
-                        break;
                     }
                 }
                 for (UserInputData user : input.getUsers()) {

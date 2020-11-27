@@ -61,14 +61,16 @@ public final class QueryOperations {
         if (objectType.equals(Constants.MOVIES)) {
             for (MovieInputData movie : input.getMovies()) {
                 if ((movie.getYear() == year || year == 0)
-                        && (movie.getGenres().contains(genre) || genre == null)) {
+                        && (movie.getGenres().contains(genre) || genre == null)
+                        && movie.getRating() != 0) {
                     map.put(movie.getTitle(), movie.getRating());
                 }
             }
         } else if (objectType.equals(Constants.SHOWS)) {
             for (SerialInputData serial : input.getSerials()) {
                 if ((serial.getYear() == year || year == 0)
-                        && (serial.getGenres().contains(genre) || genre == null)) {
+                        && (serial.getGenres().contains(genre) || genre == null)
+                        && serial.getRating() != 0) {
                     map.put(serial.getTitle(), serial.getRating());
                 }
             }

@@ -108,7 +108,7 @@ public final class Recommendation {
     public static String popular(final Input input, final String username) {
         UserInputData user = RecommendationOperations.thisUser(input, username);
         if (user == null || !user.getSubscriptionType().equals(Constants.PREMIUM)) {
-            return "PopularRecommendation cannot be applied";
+            return "PopularRecommendation cannot be applied!";
         }
 
         ArrayList<String> seenVideos = new ArrayList<>();
@@ -273,29 +273,22 @@ public final class Recommendation {
     public static String search(final Input input, final String username, final String genre) {
         UserInputData user = RecommendationOperations.thisUser(input, username);
         if (user == null || !user.getSubscriptionType().equals(Constants.PREMIUM)) {
-            return "SearchRecommendation cannot be applied";
+            return "SearchRecommendation cannot be applied!";
         }
-        ArrayList<String> seenVideos = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
-            seenVideos.add(entry.getKey());
-        }
-
-        Map<String, Double> movieMap =
-                QueryOperations.ratingsMap(input, Constants.MOVIES, 0, genre);
-        Map<String, Double> serialMap =
-                QueryOperations.ratingsMap(input, Constants.SHOWS, 0, genre);
-
-        Map<String, Double> map = new TreeMap<>(movieMap);
-        serialMap.forEach(map::put);
-        Map<String, Double> sortedMap = MapUtil.sortByValues(map);
-
-        ArrayList<String> sortedVideos = new ArrayList<>();
-        sortedMap.forEach((key, value) -> {
-            if (!seenVideos.contains(key)) {
-                sortedVideos.add(key);
+        ArrayList<String> seenVideos = new ArrayList<>(user.getHistory().keySet());
+        Map<String, Double> map = new TreeMap<>();
+        input.getMovies().forEach(x -> {
+                if (x.getGenres().contains(genre) && !seenVideos.contains(x.getTitle())) {
+                    map.put(x.getTitle(), x.getRating());
+                }
+        });
+        input.getSerials().forEach(x -> {
+            if (x.getGenres().contains(genre) && !seenVideos.contains(x.getTitle())) {
+                map.put(x.getTitle(), x.getRating());
             }
         });
-
+        Map<String, Double> sortedMap = MapUtil.sortByValues(map);
+        ArrayList<String> sortedVideos = new ArrayList<>(sortedMap.keySet());
         if (sortedVideos.size() == 0) {
             return "SearchRecommendation cannot be applied!";
         }
