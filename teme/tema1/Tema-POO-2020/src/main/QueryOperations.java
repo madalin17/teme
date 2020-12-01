@@ -1,17 +1,21 @@
 package main;
 
+import actor.ActorsAwards;
 import common.Constants;
 import entertainment.ActorRating;
-import fileio.ShowInput;
-import fileio.MovieInputData;
-import fileio.SerialInputData;
+import entertainment.NumberOfAwards;
 import fileio.Input;
 import fileio.UserInputData;
+import fileio.MovieInputData;
+import fileio.ShowInput;
+import fileio.SerialInputData;
+import fileio.ActorInputData;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Collections;
-import java.util.TreeMap;
+import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.List;
 
 public final class QueryOperations {
 
@@ -247,4 +251,38 @@ public final class QueryOperations {
         }
     }
 
+    /**
+     * If an actor has all awards, we add to the map the entry consisting of the actor's name
+     * and a class that retains the total number of awards for the actor
+     * @param input database
+     * @param awards list of awards to search for every actor
+     * @return map af all actors and number of total awards
+     */
+    public static Map<String, NumberOfAwards> editAwardsMap(final Input input,
+                                                            final List<String> awards) {
+        Map<String, NumberOfAwards> map = new TreeMap<>();
+        for (ActorInputData actor : input.getActors()) {
+            if (!map.containsKey(actor.getName())) {
+                map.put(actor.getName(), new NumberOfAwards(0, 0));
+            }
+            int totalAwards = 0;
+            for (Map.Entry<ActorsAwards, Integer> entry : actor.getAwards().entrySet()) {
+                totalAwards += entry.getValue();
+            }
+            for (Map.Entry<ActorsAwards, Integer> award : actor.getAwards().entrySet()) {
+                for (Map.Entry<String, NumberOfAwards> entry : map.entrySet()) {
+                    if (entry.getKey().equals(actor.getName())
+                            && awards.contains(award.getKey().toString())
+                            && !entry.getValue().getAwards()
+                            .contains(award.getKey().toString())) {
+                        int newCorrectAwards = entry.getValue().getCorrectAwards() + 1;
+                        entry.getValue().getAwards().add(award.getKey().toString());
+                        entry.getValue().setCorrectAwards(newCorrectAwards);
+                        entry.getValue().setTotalAwards(totalAwards);
+                    }
+                }
+            }
+        }
+        return map;
+    }
 }

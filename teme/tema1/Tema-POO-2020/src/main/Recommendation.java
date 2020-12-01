@@ -93,10 +93,7 @@ public final class Recommendation {
             return "PopularRecommendation cannot be applied!";
         }
 
-        ArrayList<String> seenVideos = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : user.getHistory().entrySet()) {
-            seenVideos.add(entry.getKey());
-        }
+        ArrayList<String> seenVideos = new ArrayList<>(user.getHistory().keySet());
 
         QueryOperations.mostViewedMap(input, Constants.MOVIES, 0, null);
         QueryOperations.mostViewedMap(input, Constants.SHOWS, 0, null);
@@ -109,18 +106,10 @@ public final class Recommendation {
 
         Map<String, ViewsByGenre> sortedMap = MapUtil.sortByValues(map);
 
-        String mostPopularGenre = null;
         int firstFreeGenre = 0;
-
         while (firstFreeGenre < sortedMap.size()) {
-            int currentGenre = 0;
-            for (Map.Entry<String, ViewsByGenre> entry : sortedMap.entrySet()) {
-                if (currentGenre == firstFreeGenre) {
-                    mostPopularGenre = entry.getKey();
-                    break;
-                }
-                currentGenre++;
-            }
+            List<String> genres = new ArrayList<>(sortedMap.keySet());
+            String mostPopularGenre = genres.get(firstFreeGenre);
             for (MovieInputData movie : input.getMovies()) {
                 if (movie.getGenres().contains(mostPopularGenre)
                         && !seenVideos.contains(movie.getTitle())) {
@@ -154,24 +143,7 @@ public final class Recommendation {
         ArrayList<String> seenVideos = new ArrayList<>(thisUser.getHistory().keySet());
 
         Map<String, Integer> map = new HashMap<>();
-        input.getMovies().forEach(movie -> movie.setNumberFavorite(0));
-        input.getSerials().forEach(serial -> serial.setNumberFavorite(0));
-        for (UserInputData user : input.getUsers()) {
-            if (user.getFavoriteMovies() != null) {
-                for (MovieInputData movie : input.getMovies()) {
-                    if (user.getFavoriteMovies().contains(movie.getTitle())) {
-                            int favorite = movie.getNumberFavorite();
-                            movie.setNumberFavorite(++favorite);
-                    }
-                }
-                for (SerialInputData serial : input.getSerials()) {
-                    if (user.getFavoriteMovies().contains(serial.getTitle())) {
-                        int favorite = serial.getNumberFavorite();
-                        serial.setNumberFavorite(++favorite);
-                    }
-                }
-            }
-        }
+        RecommendationOperations.editNumberFavorite(input);
         input.getMovies()
                 .stream()
                 .filter(movie -> movie.getNumberFavorite() != 0

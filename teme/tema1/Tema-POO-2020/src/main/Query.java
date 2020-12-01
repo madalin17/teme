@@ -1,6 +1,5 @@
 package main;
 
-import actor.ActorsAwards;
 import common.Constants;
 import entertainment.ActorRating;
 import entertainment.NumberOfAwards;
@@ -179,36 +178,12 @@ public final class Query {
                                     final String sortType, final List<String> awards) {
             int correctAwards = awards.size();
 
-            Map<String, NumberOfAwards> map = new TreeMap<>();
-            for (ActorInputData actor : input.getActors()) {
-                if (!map.containsKey(actor.getName())) {
-                    map.put(actor.getName(), new NumberOfAwards(0, 0));
-                }
-                int totalAwards = 0;
-                for (Map.Entry<ActorsAwards, Integer> entry : actor.getAwards().entrySet()) {
-                    totalAwards += entry.getValue();
-                }
-                for (Map.Entry<ActorsAwards, Integer> award : actor.getAwards().entrySet()) {
-                    for (Map.Entry<String, NumberOfAwards> entry : map.entrySet()) {
-                        if (entry.getKey().equals(actor.getName())
-                                && awards.contains(award.getKey().toString())
-                                && !entry.getValue().getAwards()
-                                .contains(award.getKey().toString())) {
-                            int newCorrectAwards = entry.getValue().getCorrectAwards() + 1;
-                            entry.getValue().getAwards().add(award.getKey().toString());
-                            entry.getValue().setCorrectAwards(newCorrectAwards);
-                            entry.getValue().setTotalAwards(totalAwards);
-                        }
-                    }
-                }
-            }
-
+            Map<String, NumberOfAwards> map = QueryOperations.editAwardsMap(input, awards);
             Map<String, NumberOfAwards> allAwardsMap = new TreeMap<>();
-            for (Map.Entry<String, NumberOfAwards> entry : map.entrySet()) {
-                if (entry.getValue().getCorrectAwards() == correctAwards) {
-                    allAwardsMap.put(entry.getKey(), entry.getValue());
-                }
-            }
+            map.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue().getCorrectAwards() == correctAwards)
+                    .forEach(x -> allAwardsMap.put(x.getKey(), x.getValue()));
 
             Map<String, NumberOfAwards> sortedMap = MapUtil.sortByValues(allAwardsMap);
             ArrayList<String> actors = new ArrayList<>(sortedMap.keySet());

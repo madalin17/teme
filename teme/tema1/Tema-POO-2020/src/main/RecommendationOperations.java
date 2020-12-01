@@ -64,4 +64,32 @@ public final class RecommendationOperations {
         }
     }
 
+    /**
+     * Function changes numberFavorite variable for all movies
+     * that appear at least one time in an favorite movies list of an user
+     * @param input database
+     */
+    public static void editNumberFavorite(final Input input) {
+        input.getMovies().forEach(movie -> movie.setNumberFavorite(0));
+        input.getSerials().forEach(serial -> serial.setNumberFavorite(0));
+        for (UserInputData user : input.getUsers()) {
+            if (user.getFavoriteMovies() != null) {
+                input.getMovies()
+                        .stream()
+                        .filter(movie -> user.getFavoriteMovies().contains(movie.getTitle()))
+                        .forEach(movie -> {
+                            int favorite = movie.getNumberFavorite();
+                            movie.setNumberFavorite(++favorite);
+                        });
+                input.getSerials()
+                        .stream()
+                        .filter(serial -> user.getFavoriteMovies().contains(serial.getTitle()))
+                        .forEach(serial -> {
+                            int favorite = serial.getNumberFavorite();
+                            serial.setNumberFavorite(++favorite);
+                        });
+            }
+        }
+    }
+
 }
