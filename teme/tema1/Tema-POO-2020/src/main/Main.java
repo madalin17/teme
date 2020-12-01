@@ -71,6 +71,7 @@ public final class Main {
      * @param filePath2 for output file
      * @throws IOException in case of exceptions to reading / writing
      */
+    @SuppressWarnings("unchecked")
     public static void action(final String filePath1,
                               final String filePath2) throws IOException {
         InputLoader inputLoader = new InputLoader(filePath1);
