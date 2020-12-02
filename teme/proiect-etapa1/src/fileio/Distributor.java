@@ -1,16 +1,16 @@
 package fileio;
 
-public class Distributor {
+public final class Distributor {
 
-    public final int id;
+    private final int id;
 
-    public final int contractLength;
+    private final int contractLength;
 
-    public final int initialBudget;
+    private final int initialBudget;
 
-    public final int initialInfrastructureCost;
+    private final int initialInfrastructureCost;
 
-    public final int initialProductionCost;
+    private final int initialProductionCost;
 
     public Distributor(final int id, final int contractLength, final int initialBudget,
                        final int initialInfrastructureCost, final int initialProductionCost) {

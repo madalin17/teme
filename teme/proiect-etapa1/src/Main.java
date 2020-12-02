@@ -1,10 +1,18 @@
 import fileio.Input;
 import fileio.InputLoader;
 
-public class Main {
+public final class Main {
 
-    public static void main(String[] args) throws Exception {
-        InputLoader inputLoader = new InputLoader("/home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/checker/resources/in/basic_1.json");
+    private Main() { }
+
+    /**
+     * Main method
+     * @param args not used
+     * @throws Exception
+     */
+    public static void main(final String[] args) throws Exception {
+        InputLoader inputLoader = new InputLoader("/home/madalin/II-Sem1/POO/Etapa1/teme/teme"
+                + "/proiect-etapa1/checker/resources/in/basic_1.json");
         Input input = inputLoader.readData();
 
         System.out.println(input.getNumberOfTurns());

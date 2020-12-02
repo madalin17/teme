@@ -2,13 +2,13 @@ package fileio;
 
 import java.util.List;
 
-public class MonthlyUpdate {
+public final class MonthlyUpdate {
 
-    public final List<Consumer> newConsumers;
+    private final List<Consumer> newConsumers;
 
-    public final List<CostChange> costChanges;
+    private final List<CostChange> costChanges;
 
-    public MonthlyUpdate(List<Consumer> newConsumers, List<CostChange> costChanges) {
+    public MonthlyUpdate(final List<Consumer> newConsumers, final List<CostChange> costChanges) {
         this.newConsumers = newConsumers;
         this.costChanges = costChanges;
     }

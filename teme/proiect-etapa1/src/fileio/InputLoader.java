@@ -12,17 +12,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputLoader {
+public final class InputLoader {
 
     /**
      * The path of the input file
      */
     private final String inputPath;
 
-    public InputLoader(String inputPath) {
+    public InputLoader(final String inputPath) {
         this.inputPath = inputPath;
     }
 
+    /**
+     * Function takes a path as a parameter and parses the input
+     * @return new database
+     */
     public Input readData() {
         JSONParser jsonParser = new JSONParser();
         int numberOfTurns = 0;
@@ -72,9 +76,9 @@ public class InputLoader {
 
             if (jsonMonthlyUpdates != null) {
                 for (Object jsonMonthlyUpdate : jsonMonthlyUpdates) {
-                    JSONArray jsonNewConsumers = (JSONArray) ((JSONObject)jsonMonthlyUpdate)
+                    JSONArray jsonNewConsumers = (JSONArray) ((JSONObject) jsonMonthlyUpdate)
                             .get(Constants.NEW_CONSUMERS);
-                    JSONArray jsonCostsChanges = (JSONArray) ((JSONObject)jsonMonthlyUpdate)
+                    JSONArray jsonCostsChanges = (JSONArray) ((JSONObject) jsonMonthlyUpdate)
                             .get(Constants.COSTS_CHANGES);
 
                     List<Consumer> newConsumers = new ArrayList<>();

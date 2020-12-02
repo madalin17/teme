@@ -1,6 +1,6 @@
 package fileio;
 
-public class Consumer {
+public final class Consumer {
 
     private final int id;
 
@@ -8,7 +8,7 @@ public class Consumer {
 
     private final int monthlyIncome;
 
-    public Consumer(int id, int initialIncome, int monthlyIncome) {
+    public Consumer(final int id, final int initialIncome, final int monthlyIncome) {
         this.id = id;
         this.initialIncome = initialIncome;
         this.monthlyIncome = monthlyIncome;
