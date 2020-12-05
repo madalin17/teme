@@ -21,4 +21,11 @@ public final class Constants {
     public static final String INFRASTRUCTURE_COST = "infrastructureCost";
     public static final String PRODUCTION_COST = "productionCost";
 
+    // Create output constants
+    public static final String IS_BANKRUPT = "isBankrupt";
+    public static final String BUDGET = "budget";
+    public static final String CONTRACTS = "contracts";
+    public static final String CONSUMER_ID = "consumerId";
+    public static final String PRICE = "price";
+    public static final String REMAINED_CONTRACT_MONTHS = "remainedContractMonths";
 }
