@@ -219,6 +219,7 @@ public final class Test {
         return listArgv.toArray(argv);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void preTestCleanUp() {
         TEST_OUT_FILE.delete();
     }

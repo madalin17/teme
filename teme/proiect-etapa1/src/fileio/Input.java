@@ -1,5 +1,7 @@
 package fileio;
 
+import energy.Consumer;
+import energy.Distributor;
 import java.util.List;
 
 public final class Input {

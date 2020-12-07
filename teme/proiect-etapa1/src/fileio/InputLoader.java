@@ -1,6 +1,9 @@
 package fileio;
 
 import constants.Constants;
+import energy.Consumer;
+import energy.Distributor;
+import energy.EnergyFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,29 +51,15 @@ public final class InputLoader {
 
             if (jsonConsumers != null) {
                 for (Object jsonConsumer : jsonConsumers) {
-                    consumers.add(new Consumer(
-                            ((Long) ((JSONObject) jsonConsumer).get(Constants.ID)).intValue(),
-                            ((Long) ((JSONObject) jsonConsumer).get(Constants.INITIAL_BUDGET))
-                                    .intValue(),
-                            ((Long) ((JSONObject) jsonConsumer).get(Constants.MONTHLY_INCOME))
-                                    .intValue()
-                    ));
+                    consumers.add((Consumer) EnergyFactory.getFactory()
+                            .createEnergyInstance(jsonConsumer, Constants.CONSUMERS));
                 }
             }
 
             if (jsonDistributors != null) {
                 for (Object jsonDistributor : jsonDistributors) {
-                    distributors.add(new Distributor(
-                            ((Long) ((JSONObject) jsonDistributor).get(Constants.ID)).intValue(),
-                            ((Long) ((JSONObject) jsonDistributor).get(Constants.CONTRACT_LENGTH))
-                                    .intValue(),
-                            ((Long) ((JSONObject) jsonDistributor).get(Constants.INITIAL_BUDGET))
-                                    .intValue(),
-                            ((Long) ((JSONObject) jsonDistributor)
-                                    .get(Constants.INITIAL_INFRASTRUCTURE_COST)).intValue(),
-                            ((Long) ((JSONObject) jsonDistributor)
-                                    .get(Constants.INITIAL_PRODUCTION_COST)).intValue()
-                    ));
+                    distributors.add((Distributor) EnergyFactory.getFactory()
+                            .createEnergyInstance(jsonDistributor, Constants.DISTRIBUTORS));
                 }
             }
 
@@ -85,14 +74,8 @@ public final class InputLoader {
                     if (jsonNewConsumers != null) {
                         assert jsonConsumers != null;
                         for (Object jsonNewConsumer : jsonNewConsumers) {
-                            newConsumers.add(new Consumer(
-                                    ((Long) ((JSONObject) jsonNewConsumer).get(Constants.ID))
-                                            .intValue(),
-                                    ((Long) ((JSONObject) jsonNewConsumer)
-                                            .get(Constants.INITIAL_BUDGET)).intValue(),
-                                    ((Long) ((JSONObject) jsonNewConsumer)
-                                            .get(Constants.MONTHLY_INCOME)).intValue()
-                            ));
+                            newConsumers.add((Consumer) EnergyFactory.getFactory()
+                                    .createEnergyInstance(jsonNewConsumer, Constants.CONSUMERS));
                         }
                     }
 

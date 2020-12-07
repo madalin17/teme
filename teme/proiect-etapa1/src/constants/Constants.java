@@ -28,4 +28,8 @@ public final class Constants {
     public static final String CONSUMER_ID = "consumerId";
     public static final String PRICE = "price";
     public static final String REMAINED_CONTRACT_MONTHS = "remainedContractMonths";
+
+    // Number constants
+    public static final Double PENALTY = 0.2;
+
 }
