@@ -63,6 +63,9 @@ public final class Consumer implements EnergyInstance {
         this.debtDistributor = debtDistributor;
     }
 
+    /**
+     * pay operation for a consumer it is done in distributor's bePaid
+     */
     @Override
     public void pay() {
 

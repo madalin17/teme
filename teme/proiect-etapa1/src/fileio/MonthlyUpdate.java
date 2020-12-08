@@ -23,9 +23,4 @@ public final class MonthlyUpdate {
         return costChanges;
     }
 
-    @Override
-    public String toString() {
-        return "MonthlyUpdate{" + "newConsumers=" + newConsumers
-                + ", costChanges=" + costChanges + '}';
-    }
 }

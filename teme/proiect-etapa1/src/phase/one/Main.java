@@ -1,12 +1,8 @@
 package phase.one;
 
-import energy.Consumer;
-import energy.Distributor;
 import fileio.Input;
 import fileio.InputLoader;
-import fileio.MonthlyUpdate;
 import fileio.OutputLoader;
-import java.util.List;
 
 public final class Main {
 
@@ -22,23 +18,11 @@ public final class Main {
         InputLoader inputLoader = new InputLoader(inputPath);
         Input input = inputLoader.readData();
 
-        List<Consumer> consumers = input.getConsumers();
-        List<Distributor> distributors = input.getDistributors();
-        List<MonthlyUpdate> monthlyUpdates = input.getMonthlyUpdates();
+        Simulation.simulation(input.getConsumers(), input.getDistributors(),
+                input.getMonthlyUpdates(), input.getNumberOfTurns());
 
-        MonthUpdate.initialUpdate(consumers, distributors);
-        for (int i = 0; i < input.getNumberOfTurns(); i++) {
-            List<Integer> sizeContractedConsumers = MonthUpdate.removeConsumer(distributors);
-            for (int j = 0; j < sizeContractedConsumers.size(); j++) {
-                distributors.get(j).setSize(sizeContractedConsumers.get(j));
-            }
-            MonthUpdate.update(consumers, distributors, monthlyUpdates.get(i));
-            MonthUpdate.payments(distributors);
-            MonthUpdate.removeBankruptConsumer(consumers, distributors);
-            MonthUpdate.bankrupt(distributors);
-        }
-
-        OutputLoader outputLoader = new OutputLoader(outputPath, consumers, distributors);
+        OutputLoader outputLoader = new OutputLoader(outputPath,
+                input.getConsumers(), input.getDistributors());
         outputLoader.writeFile();
     }
 }

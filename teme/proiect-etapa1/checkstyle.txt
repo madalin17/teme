@@ -1,9 +1,2 @@
 Starting audit...
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:19:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:30:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:69:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:76:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:104:5: Missing a Javadoc comment. [MissingJavadocMethod]
-[ERROR] /home/madalin/II-Sem1/POO/Etapa1/teme/teme/proiect-etapa1/./src/phase/one/MonthUpdate.java:111:5: Missing a Javadoc comment. [MissingJavadocMethod]
 Audit done.
-Checkstyle ends with 6 errors.

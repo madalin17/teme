@@ -94,12 +94,28 @@ public final class Distributor extends DistributorPrice implements EnergyInstanc
         this.bankrupt = bankrupt;
     }
 
+    /**
+     * At the end of a month, a non-bankrupt distributor pays the infrastructure cost
+     * and the production cost for each consumer
+     */
     @Override
     public void pay() {
         this.budget -= super.getInfrastructureCost();
         this.budget -= super.getProductionCost() * consumers.size();
     }
 
+    /**
+     * If one consumer has not payed last month and has at least one month left to pay,
+     * verify if he can pay 2 contract prices and the penalty; if not, consumer becomes bankrupt
+     * If one consumer is in debt, verify if he can pay current contract and last contracts'
+     * price and penalty; if not, consumer becomes bankrupt
+     * If the opposite occurs or if the consumer can pay this month's contract without being in
+     * debt and having paid last month, he pays
+     * If consumer can't pay and he has one month left to pay, his debt becomes current contract
+     * and the debtDistributor is current distributor; next month, consumer will search for another
+     * contract and if he can't pay the debt, he becomes bankrupt
+     * If none of those cases occur, consumer has not paid this month
+     */
     @Override
     public void bePaid() {
         consumers.forEach((key, value) -> {

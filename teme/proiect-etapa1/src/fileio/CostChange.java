@@ -25,10 +25,4 @@ public final class CostChange {
     public int getProductionCost() {
         return productionCost;
     }
-
-    @Override
-    public String toString() {
-        return "CostChange{" + "id=" + id + ", infrastructureCost=" + infrastructureCost
-                + ", productionCost=" + productionCost + '}';
-    }
 }

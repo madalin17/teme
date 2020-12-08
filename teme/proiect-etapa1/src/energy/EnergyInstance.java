@@ -8,7 +8,7 @@ public interface EnergyInstance {
     void pay();
 
     /**
-     * Function called when an EnergyInstance has be paid
+     * Function called when an EnergyInstance has to be paid
      */
     void bePaid();
 
